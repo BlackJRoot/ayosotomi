@@ -8,6 +8,8 @@ problems that came up + how they got solved.
 
 ## Phase 2
 
+<!-- Some Phase 2 content is migrated from https://theayodilemma.substack.com -->
+
 ### Step 1 — Content Collections schema (`src/content.config.ts`)
 
 **What it is:** The typed contract for all Markdown content on the site. Three collections — `blog`, `projects`, `now` — each with a Zod schema describing exactly what fields its frontmatter must have.
@@ -146,3 +148,20 @@ The human asked to un-draft the posts to see them live. Worth noting what that d
 1. Found and fixed an unrelated frontmatter corruption in `building-ayosotomi.md` (the closing `---` had gotten merged onto the same line as unrelated stray text) while verifying builds for this round — would have broken content parsing if left in.
 2. Substack migration is **paused, not abandoned** — waiting on the human to provide a Substack export instead of live-scraping the archive.
 3. `astro check` (0 errors/19 files) and `npm run build` (8 pages) both clean after the prev/next nav and card redesign changes.
+
+### Substack migration, completed (using the human-provided export)
+
+**What it is:** The human provided `substack_export.zip` (Settings → Exports from their own Substack dashboard) — the human-supplied-document path discussed earlier. Converted the 4 target posts (`you-might-be-somebodys-illusion`, `why-they-join`, `you-cant-die-at-least-not-to-yourself`, `why-do-i-always-have-to-be-the-one`) from Substack's export HTML into Markdown files under `src/content/blog/essays/`, all `draft: true` pending review, per the human's explicit choice.
+
+**Concepts learned:**
+- **`posts.csv` is more trustworthy than the public archive page for scope.** The export's `posts.csv` has an `is_published` column. It revealed 3 unpublished/draft posts (`the-darkness`, `ayos-opening-act-who-am-i`, plus 3 placeholder-slug drafts and a theme-preview file) that never appeared on the public archive page at all. Cross-checking against this file — rather than assuming "whatever's in the export folder is fair game" — confirmed the migration scope matched exactly what was asked for: the 4 target posts, nothing extra, nothing missing.
+- **Substack represents images two different ways in its export HTML**, and a converter needs to handle both:
+  - `<div class="image-gallery-embed" data-attrs="...">` — a JSON blob (HTML-entity-escaped) with the image URL(s) and alt text inside a `data-attrs` string attribute. Needs `json.loads()` after the entities are already decoded by the HTML parser.
+  - `<div class="captioned-image-container"><figure><a class="image-link" href="...">...<img></a><figcaption>...</figcaption></figure></div>` — a completely different structure for Substack's standard "click to enlarge" image block, with the caption (if any) as separate sibling text.
+  A converter that only handles one of these will silently produce **zero errors and zero images** for posts using the other — there's no exception to catch, the content just quietly goes missing. This is the kind of bug that only surfaces by explicitly counting expected-vs-actual images per post, not by "no errors thrown."
+- **The `<a class="image-link" href="...">` URL is a resize proxy, not the original.** It points at `substackcdn.com/image/fetch/$s_!.../https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2F...` — a URL-encoded original URL embedded inside a resizing proxy URL. Decoding the `https%3A%2F%2F...` portion (regex + `urllib.parse.unquote`) gets the original, full-resolution S3 URL instead of a Substack-resized copy.
+- **Astro's relative-path image handling in Markdown content only runs for pages that actually get rendered.** Draft posts never go through `getStaticPaths()`/`render()`, so their images are never processed by Astro's optimization pipeline — meaning `astro check`/`build` passing cleanly with drafts in place does **not** prove the images will actually work once un-drafted. Verified this properly: temporarily flipped one image-heavy post to `draft: false`, rebuilt, confirmed Astro generated real optimized WebP output (893kB → 174kB, 380kB → 77kB) at real routes, then reverted back to `draft: true` and rebuilt again to confirm the site returned to its exact pre-test state (8 pages, same as before).
+
+**Problems encountered + solutions:**
+1. **2 of 4 posts silently got 0 images** on the first conversion pass — see the "two different structures" point above. Caught by explicitly diffing "images downloaded" (4, via `curl`, confirmed by file size/type) against "images referenced in the generated Markdown" (only 1 present) — a mismatch that a bare "did the script error?" check would have missed entirely. Added `captioned-image-container` handling and regenerated all 4 files.
+2. No other issues — frontmatter validated cleanly against the Step 1 schema on the first attempt for all 4 posts (title/description length limits, `category: "essay"`, tags, `publishedAt` dates from `posts.csv`).
