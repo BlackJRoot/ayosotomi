@@ -64,17 +64,17 @@ Do NOT modify these without explicit human approval:
 
 ## Current State 📍
 **Last Updated:** 2026-07-23
-**Working On:** Phase 1 — Foundation (scaffold done, GitHub/Cloudflare deploy pending, human-owned)
-**Recently Completed:** Astro 7.x + TypeScript strict scaffold, Tailwind 4 (CSS-first config), Dawn Light palette + fonts wired up, `BaseLayout`/`Header`/`Footer` built and verified (build, `astro check`, dev server, mobile viewport)
-**Blocked By:** None — GitHub repo creation and Cloudflare Pages connection are being done by the human directly
+**Working On:** Phase 1 complete. Ready to start Phase 2 — Core Features.
+**Recently Completed:** Astro 7.x + TypeScript strict scaffold, Tailwind 4 (CSS-first config), Dawn Light palette + fonts wired up, `BaseLayout`/`Header`/`Footer` built and verified. Pushed to GitHub (`github.com/BlackJRoot/ayosotomi`) and deployed to classic Cloudflare Pages (static assets, no adapter, no bindings) at https://ayosotomi.pages.dev/ — verified live with correct palette/fonts. See `MEMORY.md` for the Workers-vs-Pages detour and why we landed on plain static Pages.
+**Blocked By:** None
 
 ## Roadmap 🗺️
 
 ### Phase 1: Foundation
 - [x] Install tools (Node.js LTS, Git already present in the environment; VS Code + extensions are a human-side setup step)
 - [x] Initialize the Astro project with TypeScript (strict) + Tailwind, configure the Dawn Light color palette
-- [ ] Set up the GitHub repo, push the initial commit (human-owned — see Current State)
-- [ ] Deploy a hello-world to Cloudflare Pages (day-1 deploy, so every change after has a live URL) (human-owned)
+- [x] Set up the GitHub repo, push the initial commit — `github.com/BlackJRoot/ayosotomi` (human-owned)
+- [x] Deploy a hello-world to Cloudflare Pages (day-1 deploy, so every change after has a live URL) — live at https://ayosotomi.pages.dev/, plain static deploy, no Workers adapter (human-owned)
 - [x] Build `BaseLayout.astro`, `Header.astro`, `Footer.astro`
 
 ### Phase 2: Core Features
