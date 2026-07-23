@@ -11,6 +11,8 @@ draft: false
 
 I was catching up with an old acquaintance recently — someone from back when I was actively on Facebook. We hadn’t properly spoken in years. And somewhere in the conversation, she said something that made me think.
 
+> The reason I remembered you, even though we don’t talk, is because you post all the time… It’s like one of those people you just see on the internet but don’t talk to. But you know them. Because you see them.
+
 She meant it warmly. I received it warmly.
 
 But it lodged somewhere and refused to leave.
@@ -19,7 +21,7 @@ Because what she was describing, so casually, like it was nothing — was a rela
 
 And that’s when the idea I’d been circling for months finally sat down in front of me and refused to move.
 
-Maybe I want to leave social media.
+> Maybe I want to leave social media.
 
 ---
 
@@ -43,7 +45,7 @@ To put this into perspective, think about what watching a story even is. You tap
 
 But you didn’t talk to them. You didn’t ask how they are. They don’t even know you were there. Nothing passed between you. You just watched. And the watching convinces you you’ve done the thing that friends do, when you actually did the opposite of it.
 
-That’s the trick. Consumption dressed up as closeness.
+> That’s the trick. Consumption dressed up as closeness.
 
 ---
 
@@ -67,7 +69,7 @@ I’m also the *watched*.
 
 Because if I post all the time, then I am the content in someone else’s feed. I’m the person they feel “caught up” on without ever reaching out. *Known, but not known. Seen, but not spoken to.* My acquaintance remembered me, not because we ever shared anything real, but because I performed a version of my life well enough, and often enough, that it stuck.
 
-It’s one thing to realise you’ve been mistaking watching for closeness. It’s another thing entirely to realise you might be somebody else’s illusion.
+> It’s one thing to realise you’ve been mistaking watching for closeness. It’s another thing entirely to realise you might be somebody else’s illusion.
 
 Sit with that for a second, because that’s the part that actually unsettled me.
 

@@ -61,7 +61,9 @@ Let’s go back to the chair. The gun. The quantum trigger.
 
 In Many-Worlds, every time that trigger is pulled, the universe branches. In one branch, the gun fires. You die. In another, it doesn’t fire. You live.
 
-And here’s the crucial part: **the version of you that dies cannot experience dying.**
+And here’s the crucial part:
+
+> The version of you that dies cannot experience dying.
 
 Let’s think about this carefully. Death ends consciousness. There’s no “being dead” from the inside—no sensation, no awareness, no experience of having died. So the only branch where any version of you continues to have experiences is the branch where you survived.
 
@@ -85,7 +87,7 @@ But here’s where I’ll stop for now — because the harder question isn’t r
 
 Even if we accept everything above. Even if Many-Worlds is correct, and there is always a branch where you survive, and your consciousness always follows the living version of you —
 
-*Is it actually you?*
+> Is it actually you?
 
 That’s not a rhetorical question. Philosophers have been arguing about it seriously for decades, and the answer is genuinely unsettling — not because there isn’t one, but because the best attempts at one make the original question look simple by comparison.
 
