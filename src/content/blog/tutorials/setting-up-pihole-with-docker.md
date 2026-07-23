@@ -4,7 +4,7 @@ description: "A beginner-friendly walkthrough of running Pi-hole in a Docker con
 publishedAt: 2026-06-15
 category: "tutorial"
 tags: ["docker", "pihole", "homelab", "networking"]
-draft: true
+draft: false
 ---
 
 <!-- DRAFT: personalize this in your own voice before publishing. -->
