@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+
+const statusStyles: Record<CollectionEntry<'projects'>['data']['status'], string> = {
+  active: 'bg-green-100 text-green-800',
+  learning: 'bg-blue-100 text-blue-800',
+  completed: 'bg-gray-100 text-gray-700',
+  archived: 'bg-gray-100 text-gray-500',
+};
+---
+
+<article>
+  <a href={`/projects/${project.id}/`} class="group block">
+    <div class="flex items-center justify-between gap-4">
+      <h3
+        class="font-serif text-xl text-text transition-colors duration-300 group-hover:text-accent"
+      >
+        {project.data.title}
+      </h3>
+      <span
+        class={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium capitalize ${statusStyles[project.data.status]}`}
+      >
+        {project.data.status}
+      </span>
+    </div>
+    <p class="mt-2 text-text-secondary">{project.data.description}</p>
+    <ul class="mt-3 flex flex-wrap gap-2">
+      {
+        project.data.tech.map((tech) => (
+          <li class="rounded-full border border-border px-2 py-0.5 text-xs text-text-secondary">
+            {tech}
+          </li>
+        ))
+      }
+    </ul>
+  </a>
+</article>

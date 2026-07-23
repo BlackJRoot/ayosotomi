@@ -1,5 +1,17 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+
+const nowEntries = await getCollection('now');
+const currentNow = nowEntries.sort(
+  (a, b) => b.data.updatedAt.valueOf() - a.data.updatedAt.valueOf()
+)[0];
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+const featuredPost = posts[0];
 ---
 
 <BaseLayout
@@ -15,5 +27,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Writer. Builder. Security-minded human.
       </p>
     </section>
+
+    {
+      currentNow && (
+        <section>
+          <h2 class="mb-4 text-sm uppercase tracking-wider text-text-secondary">
+            Currently
+          </h2>
+          <ul class="space-y-2">
+            {currentNow.data.workingOn.map((item) => (
+              <li class="text-text">→ {item}</li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      featuredPost && (
+        <section>
+          <h2 class="mb-4 text-sm uppercase tracking-wider text-text-secondary">
+            Latest
+          </h2>
+          <PostCard post={featuredPost} />
+        </section>
+      )
+    }
   </div>
 </BaseLayout>

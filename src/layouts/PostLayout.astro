@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import ReadingTime from '../components/ReadingTime.astro';
+import { formatDate } from '../lib/utils';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  readingTime: number;
+  related: CollectionEntry<'blog'>[];
+}
+
+const { post, readingTime, related } = Astro.props;
+---
+
+<BaseLayout
+  title={`${post.data.title} — Ayomiposi Sotomi`}
+  description={post.data.description}
+>
+  <article class="mx-auto max-w-2xl px-6 py-20">
+    <header>
+      <p class="text-sm uppercase tracking-wider text-text-secondary">
+        {post.data.category.replace('-', ' ')}
+      </p>
+      <h1 class="mt-2 font-serif text-4xl font-medium text-text md:text-5xl">
+        {post.data.title}
+      </h1>
+      <p class="mt-4 text-sm text-text-secondary">
+        {formatDate(post.data.publishedAt)} · <ReadingTime minutes={readingTime} />
+      </p>
+    </header>
+
+    <div class="prose prose-neutral mt-10 max-w-none">
+      <slot />
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="mt-16">
+          <h2 class="mb-4 text-sm uppercase tracking-wider text-text-secondary">
+            Related
+          </h2>
+          <div class="space-y-8">
+            {related.map((relatedPost) => (
+              <PostCard post={relatedPost} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
