@@ -4,7 +4,7 @@ description: "On being seen, being watched, and the quiet lie that we're still c
 publishedAt: 2026-07-04
 category: "essay"
 tags: ["social-media", "connection", "reflection"]
-draft: true
+draft: false
 ---
 
 <!-- Migrated from Substack (theayodilemma.substack.com). Review before publishing. -->
