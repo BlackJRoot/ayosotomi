@@ -64,9 +64,9 @@ Do NOT modify these without explicit human approval:
 
 ## Current State 📍
 **Last Updated:** 2026-07-23
-**Working On:** Phase 1 complete. Ready to start Phase 2 — Core Features.
-**Recently Completed:** Astro 7.x + TypeScript strict scaffold, Tailwind 4 (CSS-first config), Dawn Light palette + fonts wired up, `BaseLayout`/`Header`/`Footer` built and verified. Pushed to GitHub (`github.com/BlackJRoot/ayosotomi`) and deployed to classic Cloudflare Pages (static assets, no adapter, no bindings) at https://ayosotomi.pages.dev/ — verified live with correct palette/fonts. See `MEMORY.md` for the Workers-vs-Pages detour and why we landed on plain static Pages.
-**Blocked By:** None
+**Working On:** Phase 2 nearly complete — only Newsletter Signup remains.
+**Recently Completed:** Homepage, Writing section (index + category filter + post pages + related posts + RSS), Projects section (index + detail pages), and Now Page all built and verified end-to-end in the dev server (see `MEMORY.md` for full detail). Content Collections schema and sample content in place. Pushed to GitHub and live at https://ayosotomi.pages.dev/ as of Phase 1; Phase 2 commits are pushed but the site redeploys automatically on Cloudflare's next build after each push.
+**Blocked By:** Newsletter Signup needs a Buttondown account + API key from the human before it can be built.
 
 ## Roadmap 🗺️
 
@@ -78,11 +78,11 @@ Do NOT modify these without explicit human approval:
 - [x] Build `BaseLayout.astro`, `Header.astro`, `Footer.astro`
 
 ### Phase 2: Core Features
-- [ ] Quiet Garden Homepage — warm linen background, name + descriptor, "Currently" section, one featured post excerpt
-- [ ] Writing Section — Markdown blog posts filterable by category, individual post pages with syntax highlighting, reading time, related posts, RSS feed
-- [ ] Projects Section — homelab/Docker/cybersecurity project write-ups with status badges, tech tags, GitHub/demo links
-- [ ] Now Page — living document (Working on / Learning / Reading / Tools) with a "last updated" date
-- [ ] Newsletter Signup — non-imposing Buttondown form in the footer and at the end of posts, GDPR-compliant
+- [x] Quiet Garden Homepage — name + descriptor, "Currently" section, one featured post excerpt (warm linen background = Dawn Light `--color-bg`, already in place since Phase 1)
+- [x] Writing Section — Markdown blog posts filterable by category, individual post pages with syntax highlighting (Shiki, built-in), reading time, related posts, RSS feed
+- [x] Projects Section — homelab/Docker/cybersecurity project write-ups with status badges, tech tags, GitHub/demo links
+- [x] Now Page — living document (Working on / Learning / Reading / Tools) with a "last updated" date
+- [ ] Newsletter Signup — non-imposing Buttondown form in the footer and at the end of posts, GDPR-compliant (blocked: needs a Buttondown account/API key from the human)
 
 ### Phase 3: Polish
 - [ ] About page and Privacy Policy page

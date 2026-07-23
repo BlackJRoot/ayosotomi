@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, calculateReadingTime } from '../lib/utils';
+import ReadingTime from './ReadingTime.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const readingTime = calculateReadingTime(post.body ?? '');
+---
+
+<article>
+  <a href={`/writing/${post.id}/`} class="group block">
+    <h3
+      class="font-serif text-xl text-text transition-colors duration-300 group-hover:text-accent"
+    >
+      {post.data.title}
+    </h3>
+    <p class="mt-2 text-text-secondary">{post.data.description}</p>
+    <p class="mt-2 text-sm text-text-secondary">
+      {formatDate(post.data.publishedAt)} · <ReadingTime minutes={readingTime} />
+    </p>
+  </a>
+</article>

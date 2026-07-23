@@ -9,6 +9,7 @@
 ## Other Services (from the Tech Design)
 - **Content:** Markdown + Astro Content Collections — `blog`, `projects`, and `now` collections, each with its own Zod schema (see `docs/TechDesign-Ayosotomi-MVP.md` → Data Model).
 - **Syntax highlighting:** Shiki, built into Astro — no extra dependency for code blocks.
+- **RSS:** `@astrojs/rss` (added Phase 2, Step 6) powers `src/pages/rss.xml.ts`. Requires `site` to be set in `astro.config.mjs` (currently `https://ayosotomi.pages.dev`) to produce absolute item links.
 - **Images:** Astro Assets (`astro:assets`) for automatic WebP conversion, lazy loading, and responsive `srcset`.
 - **Fonts:** Google Fonts (Newsreader, Inter, JetBrains Mono), self-hosted via `@fontsource/*` packages for performance and privacy (no Google Fonts CDN request).
 - **Hosting:** Cloudflare Pages — build command `npm run build`, output directory `dist`.

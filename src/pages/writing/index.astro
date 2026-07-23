@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+
+const categories = ['all', ...new Set(posts.map((post) => post.data.category))];
+---
+
+<BaseLayout
+  title="Writing — Ayomiposi Sotomi"
+  description="Essays, tutorials, and project logs."
+>
+  <div class="mx-auto max-w-2xl px-6 py-20">
+    <h1 class="font-serif text-4xl font-medium text-text md:text-5xl">
+      Writing
+    </h1>
+
+    <div class="mt-8 flex flex-wrap gap-2" id="category-filters">
+      {
+        categories.map((category) => (
+          <button
+            type="button"
+            data-filter={category}
+            data-active={category === 'all' ? 'true' : 'false'}
+            class="rounded-full border border-border px-3 py-1 text-sm text-text-secondary capitalize transition-colors duration-300 hover:text-accent data-[active=true]:border-accent data-[active=true]:text-accent"
+          >
+            {category.replace('-', ' ')}
+          </button>
+        ))
+      }
+    </div>
+
+    <ul class="mt-10 space-y-10" id="post-list">
+      {
+        posts.map((post) => (
+          <li data-category={post.data.category}>
+            <PostCard post={post} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<script>
+  const filters = document.getElementById('category-filters');
+  const list = document.getElementById('post-list');
+
+  filters?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest('button[data-filter]');
+    if (!button) return;
+
+    const filter = button.getAttribute('data-filter');
+
+    filters.querySelectorAll('button[data-filter]').forEach((btn) => {
+      btn.setAttribute('data-active', String(btn === button));
+    });
+
+    list?.querySelectorAll('li[data-category]').forEach((item) => {
+      const matches = filter === 'all' || item.getAttribute('data-category') === filter;
+      item.classList.toggle('hidden', !matches);
+    });
+  });
+</script>
