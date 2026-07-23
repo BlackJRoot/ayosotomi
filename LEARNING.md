@@ -178,3 +178,19 @@ The human asked to un-draft the posts to see them live. Worth noting what that d
 
 **Problems encountered + solutions:**
 1. Inserted the missing quote directly into the already-hand-edited file (rather than regenerating from the converter, which would have discarded the blockquote edits already made) — verified via `astro check`, full build, and a live browser check confirming all 4 blockquotes (the restored quote + 3 pull-quotes) render with the correct distinct styling.
+
+## Phase 3
+
+### Items 1-3 — About page, Privacy Policy, custom 404
+
+**What it is:** Three static pages, held for human review before pushing (unlike every prior step, which was pushed immediately after verification).
+
+**Concepts learned:**
+- **Biographical content needs the same authenticity boundary as the migrated blog posts.** The About page makes first-person claims about a real person's identity — even though nothing in it is *false* (it only draws on things already established in the project docs and existing writing), I'm not the person, so it's marked with the same `<!-- DRAFT: personalize... -->` convention used for the AI-authored sample content back in Phase 2, rather than presented as finished.
+- **A Privacy Policy should describe reality, not aspiration.** Buttondown and Cusdis are planned (Newsletter is Step 8, on hold; comments were never scheduled for Phase 2) but not live — the policy explicitly says so and commits to updating itself *before* those services launch, rather than describing services that don't exist yet as if they already collect data.
+- **Astro's whitespace handling around JSX-style tag boundaries isn't automatic HTML collapsing.** Writing `find me on\n<a ...\n  >GitHub</a\n>.` (splitting the closing `>` onto its own line, a common formatting style for controlling exactly where whitespace does or doesn't appear) resulted in **zero** space between "on" and the link in the rendered output, not the single collapsed space plain HTML would give. Caught this by reading `element.innerHTML` directly in the browser rather than trusting `get_page_text` (which had already silently absorbed the missing space when it displayed as "onGitHub" — worth noticing that visual/text-extraction checks can mask exactly this class of bug). Fixed with an explicit `{' '}` expression between the text and the link.
+
+**Problems encountered + solutions:**
+1. The missing-space bug above — found via `innerHTML` inspection, not the text-based check that ran first and didn't surface it.
+2. `astro check` (0 errors/22 files), full build (15 pages, up from 12), and live browser verification of content + no console errors + no mobile overflow (375px) on all three new pages, all clean.
+3. Per the human's explicit request, this round is **committed locally but not pushed** — first time deviating from the "push immediately after verifying" pattern established every prior step, since they asked for a review checkpoint before this particular deploy.

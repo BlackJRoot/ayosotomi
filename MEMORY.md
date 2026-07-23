@@ -5,10 +5,11 @@ DO NOT delete historical context if it is still relevant. Compress older complet
 -->
 
 ## 🏗️ Active Phase & Goal
-**Current Task:** Phase 2 — Core Features. Steps 1-7 done. Header/Footer bug fixed. Added category-scoped prev/next post nav and a fanned-deck ProjectCard redesign (human-requested, outside the original 8-step plan). Substack migration complete and **published** (`draft: false` on all 4, per human request) — one genuinely dropped quote (a `callout-block` div the converter didn't handle) was found via the human comparing against a screenshot of the real Substack page, and fixed; blockquote/pull-quote styling also added to `PostLayout.astro`. Only Step 8 (Newsletter) remains for Phase 2. Workflow: commit + push after each step, log concepts/problems in `LEARNING.md` after every step (standing instruction from the human).
+**Current Task:** Phase 2 — Steps 1-7 done, Step 8 (Newsletter) explicitly put on hold by the human to jump to Phase 3 instead (needs a Buttondown account/API key first; resume whenever provided). Phase 3 — items 1-3 (About, Privacy Policy, custom 404) built and verified, but **held locally, not pushed** — human explicitly asked for a review pass before this particular deploy, a first deviation from the "push immediately after verifying" pattern used every prior step. Workflow otherwise unchanged: log concepts/problems in `LEARNING.md` after every step (standing instruction from the human).
 **Next Steps:**
-1. Step 8 — Newsletter signup (needs a Buttondown account/API key from the human first — cannot proceed until they provide one).
-2. Once Phase 2 wraps: Phase 3 (About/Privacy pages, dark mode, custom 404, mobile pass, Lighthouse pass).
+1. Waiting on human review/sign-off on About/Privacy/404 before pushing.
+2. Phase 3 items 4-5: dark mode (biggest remaining item — CSS variable overrides already scoped out in Tech Design, needs the toggle script + `ThemeToggle.astro`), then mobile + Lighthouse-equivalent pass.
+3. Step 8 (Newsletter) resumes whenever the human provides Buttondown credentials.
 
 ## 📂 Architectural Decisions
 *(Log specific choices made during the build here so future agents respect them)*
@@ -51,3 +52,4 @@ DO NOT delete historical context if it is still relevant. Compress older complet
 - [x] Fanned-deck ProjectCard redesign — `isolate` + positive z-index for correct stacking, group-hover CSS rules confirmed present in the compiled stylesheet
 - [x] Substack migration: 4 posts converted from the human-provided export into `src/content/blog/essays/`, published (`draft: false`), images optimized
 - [x] Blockquote/pull-quote fix: `PostLayout.astro` prose styling for real `<blockquote>` elements, promoted quote-worthy lines across all 4 migrated posts, and recovered one genuinely dropped quote (`callout-block` div the converter missed) caught by the human via a Substack screenshot comparison. Verified: 4 blockquotes render with correct serif/accent-border styling on "You Might Be Somebody's Illusion", `astro check` 0 errors, 12-page build clean
+- [x] Phase 3 items 1-3: About page (`src/pages/about.astro`, draft-marked for human personalization), Privacy Policy (`src/pages/privacy.astro`, describes only currently-live data practices), custom 404 (`src/pages/404.astro`). Nav updated (Header: +About, Footer: +Privacy). Found and fixed a real bug along the way: Astro trimmed all whitespace at a multi-line tag boundary in About's GitHub link, rendering "onGitHub" with zero space — fixed with `{' '}`. Verified: `astro check` 0 errors/22 files, 15-page build, live content + no console errors + no mobile overflow on all 3 pages. **Committed locally, not pushed — awaiting human review per their explicit request.**
