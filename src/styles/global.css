@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-bg: #FAF6F1;
+  --color-text: #3D3632;
+  --color-text-secondary: #9A918A;
+  --color-accent: #C4956A;
+  --color-link: #B87B6A;
+  --color-border: #E5DDD4;
+  --color-code-bg: #F3EDE6;
+
+  --font-serif: "Newsreader", serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
