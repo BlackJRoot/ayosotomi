@@ -4,7 +4,7 @@ description: "Why this site is a garden, not a portfolio — and what that means
 publishedAt: 2026-05-01
 category: "essay"
 tags: ["reflection"]
-draft: true
+draft: false
 ---
 
 <!-- DRAFT: personalize this in your own voice before publishing. -->

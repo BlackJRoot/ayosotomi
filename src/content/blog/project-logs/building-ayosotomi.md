@@ -4,7 +4,7 @@ description: "Notes from scaffolding this site: Astro 7, Tailwind 4's CSS-first 
 publishedAt: 2026-07-23
 category: "project-log"
 tags: ["astro", "tailwind", "cloudflare", "meta"]
-draft: true
+draft: false
 ---
 
 <!-- DRAFT: personalize this in your own voice before publishing. -->
