@@ -20,8 +20,22 @@ const related = allPosts
   .filter((p) => p.id !== post.id && p.data.category === post.data.category)
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
   .slice(0, 3);
+
+const categoryPosts = allPosts
+  .filter((p) => p.data.category === post.data.category)
+  .sort((a, b) => a.data.publishedAt.valueOf() - b.data.publishedAt.valueOf());
+const currentIndex = categoryPosts.findIndex((p) => p.id === post.id);
+const prevPost = currentIndex > 0 ? categoryPosts[currentIndex - 1] : undefined;
+const nextPost =
+  currentIndex < categoryPosts.length - 1 ? categoryPosts[currentIndex + 1] : undefined;
 ---
 
-<PostLayout post={post} readingTime={readingTime} related={related}>
+<PostLayout
+  post={post}
+  readingTime={readingTime}
+  related={related}
+  prevPost={prevPost}
+  nextPost={nextPost}
+>
   <Content />
 </PostLayout>
