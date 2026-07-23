@@ -85,9 +85,9 @@ Do NOT modify these without explicit human approval:
 - [ ] Newsletter Signup — non-imposing Buttondown form in the footer and at the end of posts, GDPR-compliant (blocked: needs a Buttondown account/API key from the human)
 
 ### Phase 3: Polish
-- [ ] About page and Privacy Policy page
+- [x] About page and Privacy Policy page
 - [ ] Dark mode (time-based: light 6am–6pm / dark 6pm–6am, manual override toggle, persisted in `localStorage`)
-- [ ] Custom 404 page
+- [x] Custom 404 page
 - [ ] Mobile responsiveness pass across all key screens
 - [ ] Performance pass (Lighthouse Performance & Accessibility 90+)
 
