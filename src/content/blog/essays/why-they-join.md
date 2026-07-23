@@ -27,7 +27,7 @@ How classic.
 
 Well, somewhere between scrolling and skimming quoted tweets, a question keeps pounding against my chest and refuses to leave:
 
-*Why be in a cult?*
+> Why be in a cult?
 
 Genuinely, I’m not asking it the way people ask it on the timeline -- with performative shock and that careful distance people create so that they can feel safe and separate.
 

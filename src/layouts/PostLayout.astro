@@ -33,7 +33,9 @@ const { post, readingTime, related, prevPost, nextPost } = Astro.props;
       </p>
     </header>
 
-    <div class="prose prose-neutral mt-10 max-w-none">
+    <div
+      class="prose prose-neutral mt-10 max-w-none prose-blockquote:my-8 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:font-serif prose-blockquote:text-xl prose-blockquote:font-normal prose-blockquote:not-italic prose-blockquote:text-text"
+    >
       <slot />
     </div>
 

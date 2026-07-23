@@ -11,9 +11,13 @@ draft: false
 
 There’s this Twitter exchange I saw recently that stopped my scroll dead.
 
-A guy, @DrMel_, was responding to a question from @sneminaj who asked: “*as a man, why are you waiting for a woman to initiate things?*”
+A guy, @DrMel_, was responding to a question from @sneminaj who asked:
 
-And instead of getting defensive, Mel just laid it out plainly. Because effort matters to me. Because I want to feel special too. I want someone to go out of their way for me, plan something, think about what would make me happy. “*I too deserve to be loved with her actions,*” he said. “*It’s never been a gender role. I initiate, you initiate, both of us feel loved and special, that’s how it should be.*”
+> As a man, why are you waiting for a woman to initiate things?
+
+And instead of getting defensive, Mel just laid it out plainly. Because effort matters to me. Because I want to feel special too. I want someone to go out of their way for me, plan something, think about what would make me happy. He said:
+
+> I too deserve to be loved with her actions. It’s never been a gender role. I initiate, you initiate, both of us feel loved and special, that’s how it should be.
 
 I read it twice. Then I screenshotted it. Then I sent it to my notes app where tweets go to live forever.
 
@@ -97,7 +101,7 @@ If you’ve been waiting to be seen, tell them. If you’ve told them and nothin
 
 And if you’ve been the one not initiating, check in with yourself. It might not be malice. It might be conditioning, fear, or simply not knowing. But now you know. So do something with that.
 
-I initiate, you initiate. We both feel loved. We both feel chosen.
+> I initiate, you initiate. We both feel loved. We both feel chosen.
 
 That’s the standard. Not a high one, just an honest one.
 
