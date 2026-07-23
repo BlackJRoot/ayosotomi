@@ -4,7 +4,7 @@ description: "Thinking about campus cultism without pretending the answer is sim
 publishedAt: 2026-05-11
 category: "essay"
 tags: ["culture", "nigeria", "reflection"]
-draft: true
+draft: false
 ---
 
 <!-- Migrated from Substack (theayodilemma.substack.com). Review before publishing. -->

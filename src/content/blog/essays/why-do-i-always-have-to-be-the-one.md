@@ -4,7 +4,7 @@ description: "On effort, reciprocity, and the quiet exhaustion of always showing
 publishedAt: 2026-03-24
 category: "essay"
 tags: ["relationships", "reflection"]
-draft: true
+draft: false
 ---
 
 <!-- Migrated from Substack (theayodilemma.substack.com). Review before publishing. -->

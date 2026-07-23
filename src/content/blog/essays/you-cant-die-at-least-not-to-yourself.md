@@ -4,7 +4,7 @@ description: "The Quantum thought experiment that will ruin your evening in the 
 publishedAt: 2026-04-01
 category: "essay"
 tags: ["philosophy", "physics", "reflection"]
-draft: true
+draft: false
 ---
 
 <!-- Migrated from Substack (theayodilemma.substack.com). Review before publishing. -->
