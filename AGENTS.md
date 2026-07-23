@@ -107,5 +107,6 @@ Load these only when needed — progressive disclosure keeps context lean:
 - `agent_docs/product_requirements.md` — Feature list and user stories
 - `agent_docs/testing.md` — Test strategy and commands
 - `MEMORY.md` — Session memory: decisions, known issues, active goal
+- `LEARNING.md` — Learning log: concepts + problems/solutions from each completed build step, for the human's benefit. Update it after every step, same cadence as `MEMORY.md`.
 - `REVIEW-CHECKLIST.md` — Definition of done before marking work complete
 - `specs/` — Feature specs and handoff notes created during the build
