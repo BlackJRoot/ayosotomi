@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate } from '../lib/utils';
+
+const nowEntries = await getCollection('now');
+const current = nowEntries.sort(
+  (a, b) => b.data.updatedAt.valueOf() - a.data.updatedAt.valueOf()
+)[0];
+
+const sections = [
+  { label: 'Working on', items: current.data.workingOn },
+  { label: 'Learning', items: current.data.learning },
+  { label: 'Reading', items: current.data.reading },
+  { label: 'Tools', items: current.data.tools },
+];
+---
+
+<BaseLayout
+  title="Now — Ayomiposi Sotomi"
+  description="What I'm currently working on, learning, reading, and using."
+>
+  <div class="mx-auto max-w-2xl space-y-12 px-6 py-20">
+    <section>
+      <h1 class="font-serif text-4xl font-medium text-text md:text-5xl">
+        Now
+      </h1>
+      <p class="mt-4 text-sm text-text-secondary">
+        Last updated: {formatDate(current.data.updatedAt)}
+      </p>
+    </section>
+
+    <section class="space-y-8">
+      {
+        sections.map(({ label, items }) => (
+          <div>
+            <h2 class="mb-3 text-sm uppercase tracking-wider text-text-secondary">
+              {label}
+            </h2>
+            <ul class="space-y-2">
+              {items.map((item) => (
+                <li class="text-text">→ {item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </section>
+  </div>
+</BaseLayout>

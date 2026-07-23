@@ -64,3 +64,17 @@ problems that came up + how they got solved.
 ### Interlude — Flipping `draft: true` → `false` on all 3 posts
 
 The human asked to un-draft the posts to see them live. Worth noting what that did and didn't do: flipping a frontmatter field is a one-line, always-safe edit (Zod just re-validates `draft` as a boolean either way) — but it has **zero visible effect** until a page actually calls `getCollection('blog', ...)`. Right now nothing does: the homepage is still the static Phase-1 hero, and there's no Writing page yet. This is a good illustration of the separation Astro's Content Collections create — content existing and passing validation is a completely different thing from content being *rendered somewhere*. Sticking to the original step order (Now Page → Homepage → Writing) means the posts will actually appear once Steps 5-6 land.
+
+### Step 4 — Now Page (`src/pages/now.astro`)
+
+**What it is:** The first page that actually renders content from a collection — fetches the single `now` entry and displays its four sections plus a "last updated" date.
+
+**Concepts learned:**
+- **`getCollection()` always returns an array**, even when there's only one file. Sorting-then-`[0]` (`nowEntries.sort((a, b) => b.data.updatedAt.valueOf() - a.data.updatedAt.valueOf())[0]`) is a pattern that keeps working if more dated `now` entries get added later to build up a history — no page code needs to change.
+- **`Date.valueOf()`** converts a `Date` object to a plain number (milliseconds since epoch), which is what makes `b - a` a valid subtraction for sorting. You can't subtract two `Date` objects directly.
+- **Deduplicating repeated markup with an array + `.map()`.** The Tech Design's example had a `<!-- Repeat for learning, reading, tools -->` comment implying four near-identical hand-written blocks. Built an array of `{ label, items }` pairs instead and mapped over it once — same output, and a 5th section later is one array entry, not a copied block.
+- **Proof the Step 2 utility works end-to-end.** `formatDate(current.data.updatedAt)` rendered `2026-07-23` from frontmatter as "July 23, 2026" in the actual browser — confirming the UTC timezone fix isn't just theoretical, it's doing real work the moment content flows through a real page.
+- **Nav grows with the site.** Added a "Now" link to `Header.astro` now that the page exists (previous steps deliberately kept nav to just the site name, to avoid linking to pages that didn't exist yet).
+
+**Problems encountered + solutions:**
+1. None — `astro check` (0 errors/warnings/hints), `npm run build` (both `/index.html` and `/now/index.html` generated), and a live dev-server check (page text matched frontmatter exactly, no console errors, no horizontal overflow at 375px mobile width, nav link click-through confirmed routing) all passed on the first attempt.
