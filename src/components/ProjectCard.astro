@@ -15,8 +15,22 @@ const statusStyles: Record<CollectionEntry<'projects'>['data']['status'], string
 };
 ---
 
-<article>
-  <a href={`/projects/${project.id}/`} class="group block">
+<div class="group relative isolate">
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 z-0 rotate-[-3deg] translate-y-[3px] rounded-xl border border-border bg-bg transition-transform duration-300 group-hover:rotate-[-6deg] group-hover:translate-y-[6px]"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 z-[1] rotate-[2deg] translate-y-[2px] rounded-xl border border-border bg-code-bg transition-transform duration-300 group-hover:rotate-[4deg] group-hover:translate-y-[4px]"
+  >
+  </div>
+
+  <a
+    href={`/projects/${project.id}/`}
+    class="relative z-10 block rounded-xl border border-border bg-bg p-4 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-accent active:scale-[0.98]"
+  >
     <div class="flex items-center justify-between gap-4">
       <h3
         class="font-serif text-xl text-text transition-colors duration-300 group-hover:text-accent"
@@ -40,4 +54,4 @@ const statusStyles: Record<CollectionEntry<'projects'>['data']['status'], string
       }
     </ul>
   </a>
-</article>
+</div>
