@@ -45,3 +45,18 @@ problems that came up + how they got solved.
 
 **Problems encountered + solutions:**
 1. No type errors from `astro check` (0 errors/0 warnings/0 hints). Ran the same logic through plain Node outside the Astro/Vite pipeline as an extra sanity check — confirmed `calculateReadingTime('')` → 1, `calculateReadingTime('word '.repeat(400))` → 2, `formatDate(new Date('2026-07-23'))` → `"July 23, 2026"`. All matched expectations, including the UTC fix.
+
+### Step 3 — Sample Markdown content (`src/content/{blog,projects,now}/`)
+
+**What it is:** Real content files matching the Step 1 schemas — 3 blog posts (one per subfolder), 1 project, 1 now entry — so later steps have something real to render, and so the schemas themselves get exercised against real frontmatter instead of staying theoretical.
+
+**Concepts learned:**
+- **A schema is only proven by data hitting it.** `astro check`/`astro build` re-validate every content file's frontmatter against its Zod schema on every run — a bad date format, a mistyped enum value, or an array over its `.max()` limit fails the build immediately, naming the exact file. Writing real content right after the schema is the fastest way to find out if the schema itself has a mistake.
+- **The glob loader's nesting.** Splitting posts across `blog/essays/`, `blog/tutorials/`, `blog/project-logs/` and still seeing them all validate as one `blog` collection confirms `pattern: '**/*.{md,mdx}'` really does mean "any depth," not just the top level.
+- **HTML comments in Markdown don't render.** `<!-- DRAFT: ... -->` at the top of a post is visible in the source file but produces no output in the built HTML — useful for leaving instructions to a future editor without it leaking onto the page.
+- **`draft` as a content-level kill switch.** The `blog` schema's `draft: z.boolean().default(false)` field, combined with a `getCollection('blog', ({ data }) => !data.draft)` filter (from `tech_stack.md`'s example), means content can exist in the repo and pass validation without ever appearing on the live site — the mechanism Astro Content Collections provides for "written but not ready."
+
+**Problems encountered + solutions:**
+1. **No draft field on the `projects` schema.** Unlike `blog`, the `projects` schema (Step 1) has no `draft` boolean, so the one project entry added here (`ayosotomi-com.md`) will be publicly visible as soon as the Projects page is built in Step 7 — there was no way to stage it as hidden. Not a bug, just a gap surfaced by writing real content: worth deciding *before* Step 7 whether `projects` should get a `draft` field too.
+2. **Authenticity boundary for AI-written content on a real person's site.** All 3 blog posts are marked `draft: true` on purpose — the content is factually accurate (the project-log post is a true recap of the actual Phase 1 build; the Docker/Pi-hole tutorial is technically correct), but it's written in the site owner's voice by an AI, not the owner. `draft: true` keeps it out of production until reviewed/rewritten, in line with `AGENTS.md`'s "no placeholder content in production" rule.
+3. `astro check` and `npm run build` both passed with 0 errors after adding all 6 files — confirms every frontmatter field (including the trickier ones: `z.coerce.date()`, `z.enum()`, `z.url()`, array `.max()`) validated correctly on the first attempt.
