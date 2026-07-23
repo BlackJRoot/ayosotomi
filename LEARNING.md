@@ -28,3 +28,20 @@ problems that came up + how they got solved.
 1. **`'z' is deprecated` (36 hints from `astro check`).** Astro 7 deprecated `import { z } from 'astro:content'` in favor of a dedicated export. **Fix:** `import { z } from 'astro/zod'` instead — same Zod (v4), just re-exported from a non-deprecated path.
 2. **`z.string().url()` deprecated.** Zod v4 moved format validators like URL checking to top-level functions. **Fix:** `z.url().optional()` instead of `z.string().url().optional()` for `githubUrl`/`demoUrl` in the `projects` schema.
 3. After both fixes, `npx astro check` reported **0 errors, 0 warnings, 0 hints**, and `npm run build` completed cleanly. The `[glob-loader] base directory does not exist` warnings that still show up are expected — no content files exist yet (that's Step 3), not a bug.
+
+### Step 2 — Utility functions (`src/lib/utils.ts`)
+
+**What it is:** Two pure functions — `calculateReadingTime` and `formatDate` — that the Writing/Projects/Now pages will all reuse instead of repeating date/word-count logic on every page.
+
+**Concepts learned:**
+- **Pure functions** — same input always gives the same output, no side effects (no DOM access, no network calls, no mutating arguments). That's exactly what makes them easy to sanity-check with plain assertions instead of a full test framework.
+- **`content.trim().split(/\s+/).filter(Boolean)`** — three-step word count:
+  - `.trim()` drops leading/trailing whitespace.
+  - `.split(/\s+/)` splits on *any run* of whitespace (regex, not a literal `' '`) — handles multiple spaces, tabs, and newlines between words correctly.
+  - `.filter(Boolean)` removes empty strings from the result. Gotcha: `''.split(/\s+/)` returns `['']`, not `[]` — without the filter, empty content would count as "1 word" instead of 0.
+- **`Math.ceil()` + `Math.max(1, ...)`** — reading time always rounds *up* (a 3-min-10-sec read shows "4 min"), and never shows "0 min read" for a very short post.
+- **Timezone bug in date formatting.** `z.coerce.date()` parses a frontmatter date like `2026-07-23` as **midnight UTC**. If `toLocaleDateString` isn't told which timezone to render in, it uses whatever timezone the *build machine* happens to be in — for any UTC-negative timezone, midnight UTC on the 23rd is still the *22nd* locally, so the date silently displays one day early. **Fix:** pass `timeZone: 'UTC'` explicitly, so the displayed date always matches what's written in frontmatter, no matter where the build runs. This wasn't in the original Tech Design snippet — added it as a correctness fix.
+- **Dev-only assertions.** `if (import.meta.env.DEV) { console.assert(...) }` — `code_patterns.md` calls for "a simple assertion... for pure utility logic" since there's no Vitest suite yet. Gating on `import.meta.env.DEV` means these checks run in `astro dev`/`astro check` but never ship in the production build.
+
+**Problems encountered + solutions:**
+1. No type errors from `astro check` (0 errors/0 warnings/0 hints). Ran the same logic through plain Node outside the Astro/Vite pipeline as an extra sanity check — confirmed `calculateReadingTime('')` → 1, `calculateReadingTime('word '.repeat(400))` → 2, `formatDate(new Date('2026-07-23'))` → `"July 23, 2026"`. All matched expectations, including the UTC fix.

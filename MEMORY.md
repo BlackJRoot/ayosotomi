@@ -5,11 +5,10 @@ DO NOT delete historical context if it is still relevant. Compress older complet
 -->
 
 ## 🏗️ Active Phase & Goal
-**Current Task:** Phase 2 — Core Features. Step 1 (Content Collections schema) done. Building step by step with the human, explaining code as we go (learning-focused).
+**Current Task:** Phase 2 — Core Features. Steps 1-2 done. Building step by step with the human, explaining code as we go (learning-focused). Workflow: commit + push after each step, and log concepts/problems in `LEARNING.md` after every step (standing instruction from the human).
 **Next Steps:**
-1. Step 2 — `src/lib/utils.ts` (reading time, date formatting).
-2. Step 3 — sample Markdown content for `blog`/`projects`/`now`.
-3. Step 4 — Now Page. Step 5 — Homepage. Step 6 — Writing section + RSS. Step 7 — Projects section. Step 8 — Newsletter signup (needs a Buttondown account/API key from the human first).
+1. Step 3 — sample Markdown content for `blog`/`projects`/`now`.
+2. Step 4 — Now Page. Step 5 — Homepage. Step 6 — Writing section + RSS. Step 7 — Projects section. Step 8 — Newsletter signup (needs a Buttondown account/API key from the human first).
 
 ## 📂 Architectural Decisions
 *(Log specific choices made during the build here so future agents respect them)*
@@ -30,3 +29,4 @@ DO NOT delete historical context if it is still relevant. Compress older complet
 - [x] `BaseLayout.astro`, `Header.astro`, `Footer.astro` built and verified (`npm run build`, `npx astro check`, dev server + mobile viewport check — no console errors, no horizontal overflow)
 - [x] Cloudflare Pages deploy (hello world) — live at https://ayosotomi.pages.dev/, verified palette/fonts render correctly in production
 - [x] Content Collections schema defined (`blog`, `projects`, `now`) in `src/content.config.ts` — verified with `npx astro check` (0 errors/warnings/hints) and `npm run build`
+- [x] `src/lib/utils.ts` — `calculateReadingTime` + `formatDate` (UTC-pinned to avoid a build-timezone date-shift bug), with dev-only `console.assert` checks per `code_patterns.md`'s testing guidance
