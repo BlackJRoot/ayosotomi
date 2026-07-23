@@ -34,11 +34,14 @@ const categories = ['all', ...new Set(posts.map((post) => post.data.category))];
       }
     </div>
 
-    <ul class="mt-10 space-y-10" id="post-list">
+    <ul class="mt-10" id="post-list">
       {
-        posts.map((post) => (
-          <li data-category={post.data.category}>
-            <PostCard post={post} />
+        posts.map((post, index) => (
+          <li class="pb-10" data-category={post.data.category}>
+            <PostCard post={post} showBullet />
+            {index < posts.length - 1 && (
+              <hr class="mt-10 w-1/2 border-border" />
+            )}
           </li>
         ))
       }

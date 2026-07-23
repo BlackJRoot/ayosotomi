@@ -194,3 +194,17 @@ The human asked to un-draft the posts to see them live. Worth noting what that d
 1. The missing-space bug above — found via `innerHTML` inspection, not the text-based check that ran first and didn't surface it.
 2. `astro check` (0 errors/22 files), full build (15 pages, up from 12), and live browser verification of content + no console errors + no mobile overflow (375px) on all three new pages, all clean.
 3. Per the human's explicit request, this round is **committed locally but not pushed** — first time deviating from the "push immediately after verifying" pattern established every prior step, since they asked for a review checkpoint before this particular deploy.
+
+### Writing index: read/unread bullet + half-width divider
+
+**What it is:** A small hollow-ring bullet to the left of each post on `/writing`, styled with the CSS `:visited` pseudo-class so it fills in with a sage-green color once you've actually clicked through and read that post — plus a half-width `<hr>` under every post except the last.
+
+**Concepts learned:**
+- **`:visited` is a zero-JS way to track "have I read this."** The browser already maintains link-visit history natively; no `localStorage`, no client script, matches the site's "zero JS by default" philosophy exactly. The tradeoff: browsers deliberately restrict `:visited` for privacy — only a small set of CSS properties can respond to it (`color`, `background-color`, `border-color`, `outline-color`, and a few others), which is exactly why this had to be a bullet's color/fill rather than, say, changing its size or adding a box-shadow.
+- **Scoping a feature to one usage of a shared component via a prop, not a new component.** `PostCard.astro` is reused on the homepage, `/writing`, and each post's "Related" section — the bullet is only wanted on `/writing`. Added an optional `showBullet` prop (default `false`) rather than forking the component, so the homepage/related usages are untouched by default.
+- **`a:visited .bullet` works as a scoped Astro `<style>` rule.** Astro's component-scoped styles don't interfere with pseudo-class selectors — `:visited` on the parent `<a>` still correctly targets the child `.bullet` span's background/border color.
+- **Automated `:visited` verification has a real, known limit — not the same as the CSS being wrong.** After navigating to a post and back, `link.matches(':visited')` reported `false` even though the CSS is standard and correct. This is very likely the browser's own privacy hardening around `:visited` — Chrome intentionally makes script-based introspection of visited state unreliable (via `.matches()`, `getComputedStyle()`, etc.) specifically to prevent history-sniffing attacks, separately from whatever it actually renders for a real user. Verifying this one visually requires an actual human clicking through in a real browser session, not headless automation.
+
+**Problems encountered + solutions:**
+1. Verified: bullet renders at the requested smaller size (6×6px, down from the 14px mockup), correct accent border and transparent fill at rest, `hr` computed width is exactly half the content area (312px of 624px desktop, 163.5px at 375px mobile), and the `hr` is correctly absent after the last post. `astro check` (0 errors/22 files), full build (15 pages), no mobile overflow.
+2. The `:visited` fill-in itself couldn't be confirmed via automation (see above) — flagged this honestly rather than claiming a check that didn't actually pass, and pointed the human to verify it themselves in a real browser.

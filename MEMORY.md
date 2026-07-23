@@ -5,11 +5,10 @@ DO NOT delete historical context if it is still relevant. Compress older complet
 -->
 
 ## 🏗️ Active Phase & Goal
-**Current Task:** Phase 2 — Steps 1-7 done, Step 8 (Newsletter) explicitly put on hold by the human to jump to Phase 3 instead (needs a Buttondown account/API key first; resume whenever provided). Phase 3 — items 1-3 (About, Privacy Policy, custom 404) built and verified, but **held locally, not pushed** — human explicitly asked for a review pass before this particular deploy, a first deviation from the "push immediately after verifying" pattern used every prior step. Workflow otherwise unchanged: log concepts/problems in `LEARNING.md` after every step (standing instruction from the human).
+**Current Task:** Phase 2 — Steps 1-7 done, Step 8 (Newsletter) on hold (needs Buttondown credentials from the human). Phase 3 — items 1-3 (About, Privacy Policy, custom 404) reviewed and approved by the human; also added a read/unread bullet + half-width divider on `/writing` (human-requested polish, brainstormed visually first). All of the above approved for push. Workflow: log concepts/problems in `LEARNING.md` after every step (standing instruction from the human).
 **Next Steps:**
-1. Waiting on human review/sign-off on About/Privacy/404 before pushing.
-2. Phase 3 items 4-5: dark mode (biggest remaining item — CSS variable overrides already scoped out in Tech Design, needs the toggle script + `ThemeToggle.astro`), then mobile + Lighthouse-equivalent pass.
-3. Step 8 (Newsletter) resumes whenever the human provides Buttondown credentials.
+1. Phase 3 items 4-5: dark mode (CSS variable overrides already scoped out in Tech Design, needs the toggle script + `ThemeToggle.astro`), then mobile + Lighthouse-equivalent pass.
+2. Step 8 (Newsletter) resumes whenever the human provides Buttondown credentials.
 
 ## 📂 Architectural Decisions
 *(Log specific choices made during the build here so future agents respect them)*
