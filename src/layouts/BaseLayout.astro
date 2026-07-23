@@ -23,9 +23,39 @@ const { title, description }: Props = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#FAF6F1" />
     <title>{title}</title>
+    <script is:inline>
+      (function () {
+        function resolveAutoTheme() {
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+          }
+          const hour = new Date().getHours();
+          return hour >= 6 && hour < 18 ? 'light' : 'dark';
+        }
+
+        const stored = localStorage.getItem('theme');
+        const pinned = stored === 'light' || stored === 'dark';
+        const theme = pinned ? stored : resolveAutoTheme();
+
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute(
+          'data-theme-source',
+          pinned ? 'pinned' : 'auto'
+        );
+
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.setAttribute('content', theme === 'dark' ? '#1E1B18' : '#FAF6F1');
+        }
+      })();
+    </script>
   </head>
-  <body class="flex min-h-screen flex-col bg-bg font-sans text-text">
+  <body
+    class="flex min-h-screen flex-col bg-bg font-sans text-text transition-colors duration-300"
+  >
     <Header />
     <main class="flex-1">
       <slot />
