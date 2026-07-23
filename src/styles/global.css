@@ -15,3 +15,32 @@
   --font-sans: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
+
+[data-theme='dark'] {
+  --color-bg: #1E1B18;
+  --color-text: #E8E2DB;
+  --color-text-secondary: #A8A29E;
+  --color-accent: #A67B52;
+  --color-link: #C4956A;
+  --color-border: #3D3834;
+  --color-code-bg: #2A2623;
+  --color-visited: #A3C08E;
+}
+
+[data-theme='light'] pre.astro-code,
+[data-theme='light'] pre.astro-code span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
+}
+
+[data-theme='dark'] pre.astro-code,
+[data-theme='dark'] pre.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}

@@ -1,0 +1,110 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Toggle color theme"
+  class:list={[
+    'relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border transition-colors duration-300',
+    className,
+  ]}
+>
+  <svg
+    class="sun absolute h-4 w-4 transition-all duration-300"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path
+      d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+    ></path>
+  </svg>
+  <svg
+    class="moon absolute h-4 w-4 transition-all duration-300"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"></path>
+  </svg>
+  <span class="auto-dot absolute bottom-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-accent transition-opacity duration-300"
+  ></span>
+</button>
+
+<style>
+  .sun {
+    color: var(--color-accent);
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  .moon {
+    color: var(--color-accent);
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
+  }
+
+  :global(html[data-theme='dark']) .sun {
+    opacity: 0;
+    transform: scale(0.5) rotate(90deg);
+  }
+  :global(html[data-theme='dark']) .moon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  :global(html[data-theme-source='pinned']) .auto-dot {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  function resolveAutoTheme(): 'light' | 'dark' {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    const hour = new Date().getHours();
+    return hour >= 6 && hour < 18 ? 'light' : 'dark';
+  }
+
+  function getState(): 'auto' | 'light' | 'dark' {
+    const stored = localStorage.getItem('theme');
+    return stored === 'light' || stored === 'dark' ? stored : 'auto';
+  }
+
+  function apply(state: 'auto' | 'light' | 'dark') {
+    const theme = state === 'auto' ? resolveAutoTheme() : state;
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute(
+      'data-theme-source',
+      state === 'auto' ? 'auto' : 'pinned'
+    );
+
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute('content', theme === 'dark' ? '#1E1B18' : '#FAF6F1');
+    }
+  }
+
+  const order: Array<'auto' | 'light' | 'dark'> = ['auto', 'light', 'dark'];
+  let current = getState();
+
+  const button = document.getElementById('theme-toggle');
+  button?.addEventListener('click', () => {
+    current = order[(order.indexOf(current) + 1) % order.length];
+    if (current === 'auto') {
+      localStorage.removeItem('theme');
+    } else {
+      localStorage.setItem('theme', current);
+    }
+    apply(current);
+  });
+</script>
