@@ -1,9 +1,9 @@
 ---
-updatedAt: 2026-07-23
+updatedAt: 2026-07-24
 workingOn:
-  - "Building ayosotomi.com — Phase 2: content collections, homepage, writing & projects sections"
+  - "Building this site"
 learning:
-  - "Astro Content Collections and Zod schema validation"
+  - "Astro & Tailwind 4"
 reading:
   - "— add what you're currently reading —"
 tools:
