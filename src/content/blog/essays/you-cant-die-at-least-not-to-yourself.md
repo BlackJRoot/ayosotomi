@@ -33,7 +33,7 @@ So, let’s get into it.
 
 *If every possible version of a given event does happen, then you will only (continue to) experience outcomes where you survive.*
 
-### The Physics Part (I promise to keep it short)
+## The Physics Part (I promise to keep it short)
 
 Everything here rests on an idea called the **[Many-Worlds Interpretation](https://en.wikipedia.org/wiki/Many-worlds_interpretation). **To understand MWI, you need a tiny bit of quantum mechanics context. Just a tiny bit, without the equations.
 
@@ -55,7 +55,7 @@ This is the Many-Worlds Interpretation, or MWI. It's worth saying clearly: this 
 
 ---
 
-### So How Does This Make Anyone Immortal?
+## So How Does This Make Anyone Immortal?
 
 Let’s go back to the chair. The gun. The quantum trigger.
 
