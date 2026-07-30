@@ -14,6 +14,13 @@ const sections = [
   { label: 'Reading', items: current.data.reading },
   { label: 'Tools', items: current.data.tools },
 ];
+
+// Lighter "outside of work" extras -- optional, so only shown when present,
+// and rendered together in one condensed line rather than full sections.
+const extras = [
+  { label: 'Watching', items: current.data.watching },
+  { label: 'Doing', items: current.data.doing },
+].filter((extra): extra is { label: string; items: string[] } => !!extra.items?.length);
 ---
 
 <BaseLayout
@@ -46,5 +53,21 @@ const sections = [
         ))
       }
     </section>
+
+    {
+      extras.length > 0 && (
+        <section class="border-t border-border pt-6 text-sm text-text-secondary">
+          {extras.map(({ label, items }, i) => (
+            <>
+              {i > 0 && <span class="mx-2">·</span>}
+              <span>
+                <span class="text-text-secondary/80">{label}:</span>{' '}
+                <span class="text-text">{items.join(', ')}</span>
+              </span>
+            </>
+          ))}
+        </section>
+      )
+    }
   </div>
 </BaseLayout>

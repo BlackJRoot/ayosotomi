@@ -10,9 +10,16 @@ const currentNow = nowEntries.sort(
   (a, b) => b.data.updatedAt.valueOf() - a.data.updatedAt.valueOf()
 )[0];
 
-// First non-placeholder item from a list ("—" prefixes mark a placeholder).
+// First non-placeholder item from a list. Placeholders are either an
+// em-dash prefix ("— add what you're reading —") or fully [bracketed]
+// (the Now template's convention) -- skip both so an unfilled-in Now
+// entry never leaks placeholder text onto the homepage pulse.
+function isPlaceholder(s: string): boolean {
+  const t = s.trim();
+  return t.startsWith('—') || (t.startsWith('[') && t.endsWith(']'));
+}
 function firstReal(items?: string[]): string | undefined {
-  return items?.find((s) => s && !s.trim().startsWith('—'));
+  return items?.find((s) => s && !isPlaceholder(s));
 }
 
 const pulseParts: string[] = [];
