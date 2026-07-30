@@ -86,10 +86,10 @@ Do NOT modify these without explicit human approval:
 
 ### Phase 3: Polish
 - [x] About page and Privacy Policy page
-- [ ] Dark mode (time-based: light 6am–6pm / dark 6pm–6am, manual override toggle, persisted in `localStorage`)
+- [x] Dark mode (time-based: light 6am–6pm / dark 6pm–6am, manual override toggle, persisted in `localStorage`) — plus a three-state Auto/Light/Dark toggle and dual Shiki syntax themes, beyond the original spec
 - [x] Custom 404 page
-- [ ] Mobile responsiveness pass across all key screens
-- [ ] Performance pass (Lighthouse Performance & Accessibility 90+)
+- [x] Mobile responsiveness pass across all key screens — all 15 routes verified clean at 375px
+- [ ] Performance pass (Lighthouse Performance & Accessibility 90+) — code-level a11y basics done (skip link, focus-visible, heading hierarchy); the actual score needs the human to run Lighthouse in their own Chrome
 
 ### Phase 4: Launch
 - [ ] Comments (Cusdis) — self-hosted on Railway free tier, embedded on posts, moderation tested
