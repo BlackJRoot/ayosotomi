@@ -44,6 +44,11 @@ const now = defineCollection({
     learning: z.array(z.string()).max(5),
     reading: z.array(z.string()).max(5),
     tools: z.array(z.string()).max(5),
+    // Optional, lighter "outside of work" fields -- kept separate from and
+    // fully backward-compatible with the four required fields above.
+    // Rendered together in one condensed section, not full standalone blocks.
+    watching: z.array(z.string()).max(3).optional(),
+    doing: z.array(z.string()).max(3).optional(),
   }),
 });
 
