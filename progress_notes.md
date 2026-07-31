@@ -7,13 +7,13 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-07-31
+**Last updated:** 2026-07-31 (SEO pass)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
 ## Where things stand
 
-**Phase 1 (Foundation) and Phase 2 (Core Features) are done.** Phase 3 (Polish) is done except for one thing that needs you: running an actual Lighthouse score. Phase 4 (Launch) hasn't started.
+**Phase 1 (Foundation) and Phase 2 (Core Features) are done.** Phase 3 (Polish) is done except for one thing that needs you: running an actual Lighthouse score. Phase 4 (Launch) has started — SEO is done.
 
 ---
 
@@ -41,9 +41,10 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 - **Content cleanup** — separated your real writing (the 4 Substack essays) from everything I'd authored as sample/filler content. The sample project-log, tutorial, and project posts were removed and replaced with clearly-labeled, fully-worked reference examples you can copy from when writing real ones, plus a written guide (`specs/content-guide.md`) on how the `/writing` and `/projects` index pages work.
 - **Still open:** the actual Lighthouse Performance/Accessibility score. There's no Lighthouse CLI available in this environment — you'll need to run it yourself (via Chrome DevTools or pagespeed.web.dev) against the live site. Everything on the code side is in good shape for a strong score (optimized images, self-hosted fonts, minimal JS), but the number itself hasn't been measured yet.
 
-## Phase 4 — Launch ⏳ (not started)
+## Phase 4 — Launch ⏳ (SEO done, rest not started)
 
-Comments (Cusdis), Analytics (Cloudflare Web Analytics — one click, no code), SEO (meta tags, OpenGraph images, sitemap), a security pass, and the actual production launch checklist.
+- **SEO ✅** — every page now has a canonical URL, OpenGraph tags, and Twitter Card tags. Blog posts use their existing homepage cover image (the one in `src/assets/covers/`) as the social-share preview image automatically — no extra work needed per post, it's the same image already used on the homepage. A sitemap now generates automatically at build time, and `robots.txt` points search engines at it. The RSS feed was checked and is structurally valid. Projects don't get a share image yet — the `cover` field on that schema isn't actually wired up to anything in the codebase yet, so there was no existing convention to build on; that's a separate small task if you want it later.
+- **Still open:** Comments (Cusdis), Analytics (Cloudflare Web Analytics — one click, no code), a security pass, and the actual production launch checklist.
 
 ---
 

@@ -63,10 +63,10 @@ Do NOT modify these without explicit human approval:
 - **Workflow Discipline:** If pre-commit hooks are added later, they must pass before commits (or ask before bypassing). If verification fails, fix it before continuing.
 
 ## Current State 📍
-**Last Updated:** 2026-07-23
-**Working On:** Phase 2 nearly complete — only Newsletter Signup remains.
-**Recently Completed:** Homepage, Writing section (index + category filter + post pages + related posts + RSS), Projects section (index + detail pages), and Now Page all built and verified end-to-end in the dev server (see `MEMORY.md` for full detail). Content Collections schema and sample content in place. Pushed to GitHub and live at https://ayosotomi.pages.dev/ as of Phase 1; Phase 2 commits are pushed but the site redeploys automatically on Cloudflare's next build after each push.
-**Blocked By:** Newsletter Signup needs a Buttondown account + API key from the human before it can be built.
+**Last Updated:** 2026-07-31
+**Working On:** Phase 3 done except the Lighthouse score (needs the human). Phase 4 (Launch) started: SEO done.
+**Recently Completed:** SEO pass — `BaseLayout.astro` now emits canonical URLs, OpenGraph, and Twitter Card meta tags; `PostLayout.astro` reuses the homepage's featured-cover convention as each post's social-share image; `@astrojs/sitemap` generates a sitemap automatically at build; `public/robots.txt` added; RSS feed checked and confirmed valid. `npm run build` + `npx astro check` clean, dev-server smoke test passed. See `MEMORY.md` for full detail.
+**Blocked By:** Newsletter Signup needs a Buttondown account + API key from the human before it can be built. Lighthouse score needs the human's Chrome.
 
 ## Roadmap 🗺️
 
@@ -94,7 +94,7 @@ Do NOT modify these without explicit human approval:
 ### Phase 4: Launch
 - [ ] Comments (Cusdis) — self-hosted on Railway free tier, embedded on posts, moderation tested
 - [ ] Analytics — enable Cloudflare Web Analytics
-- [ ] SEO — meta tags, OpenGraph/Twitter cards, sitemap, RSS feed validated
+- [x] SEO — canonical URLs, OpenGraph/Twitter cards (post covers used as share images), sitemap (`@astrojs/sitemap`), `robots.txt`, RSS feed checked valid
 - [ ] Security pass (see `REVIEW-CHECKLIST.md`) — CSP/HSTS headers, `npm audit`, Dependabot enabled, no secrets in Git history
 - [ ] Deploy to production (`.pages.dev`, custom domain optional post-launch)
 - [ ] Beta launch checklist — shared with 5+ friends, all P0 features functional
