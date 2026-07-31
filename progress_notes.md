@@ -7,13 +7,13 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-07-31 (security pass)
+**Last updated:** 2026-07-31 (newsletter signup)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
 ## Where things stand
 
-**Phase 1 (Foundation) and Phase 2 (Core Features) are done.** Phase 3 (Polish) is done except for one thing that needs you: running an actual Lighthouse score. Phase 4 (Launch) has started — SEO and the security pass are both done. You're working on the Buttondown account for Newsletter.
+**Phase 1 (Foundation) and Phase 2 (Core Features) are now both fully done** — Newsletter signup (Phase 2's last open item) is built and live. Phase 3 (Polish) is done except for one thing that needs you: running an actual Lighthouse score. Phase 4 (Launch) has started — SEO and the security pass are both done.
 
 ---
 
@@ -21,14 +21,14 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 
 Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a plain static site (no backend, no database). The Dawn Light color palette and Newsreader/Inter/JetBrains Mono fonts were wired in from day one via CSS custom properties — a choice that paid off repeatedly later (see Dark Mode below).
 
-## Phase 2 — Core Features ✅ (except Newsletter)
+## Phase 2 — Core Features ✅
 
 - **Content Collections schema** (`blog`, `projects`, `now`) with Zod validation.
 - **Homepage, Writing section, Projects section, Now page** all built and wired to real content.
 - **Writing section** includes category filtering, syntax-highlighted code blocks, reading time, related posts, category-scoped Previous/Next navigation, and an RSS feed.
 - **Substack migration:** your 4 real essays were migrated from your Substack export (not scraped — you provided the export directly, since live-scraping your own site ran into copyright-reproduction limits regardless of authorship). One dropped quote (a `callout-block` structure the converter missed) was caught and fixed after you compared against a screenshot of the real Substack page.
 - **Blockquote/pull-quote styling** added so quoted material and emphasized lines read distinctly from body text.
-- **Newsletter signup is on hold** — needs a Buttondown account and API key from you before it can be built. Nothing blocks the rest of the site on this.
+- **Newsletter signup ✅** — a signup form now lives in the footer of every page and at the end of every post. It posts your email straight to Buttondown, with no server or API key involved on this site's side at all (more on that choice below). Double opt-in and one-click unsubscribe are both on, and the privacy policy now describes exactly what Buttondown collects.
 
 ## Phase 3 — Polish ✅ (except the Lighthouse score)
 
@@ -57,10 +57,10 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 - **`projects` collection has no `draft` field** — a deliberate choice (confirmed with you twice, most recently when declined again during the content cleanup) rather than an oversight. Anything added to `/projects` is immediately public.
 - **Cover images use a folder convention, not a schema field** (`src/assets/covers/<post-slug>.<ext>`) — avoids touching the content schema (a Protected Area) while still getting full image optimization. Documented in `specs/content-guide.md`.
 - **AI-authored content is never published live without your review.** Every piece of sample/placeholder content this project generated — draft blog posts, the About page copy, project write-ups, Now content — was either marked `draft: true`, clearly labeled `[Template]`, or held for your explicit sign-off before going live. This was treated as a hard rule throughout, not a one-off.
+- **Newsletter signup has no API key, on purpose.** The original plan called for a Buttondown API key and a bit of server-side code to use it safely. Since this site has no server, that would've meant adding one just for this — a real change to how the whole site works, not just a feature. Buttondown has a public signup endpoint made for exactly this situation (plain static sites), so the form uses that instead: no key, nothing new to secure, and the site stays exactly as simple as it's been from day one. If you ever want extras that genuinely need the API (a live subscriber count, custom confirmation emails), that's the point to revisit this — not before.
 
 ## Next steps
 
 1. **Run Lighthouse** (Performance + Accessibility) against https://ayosotomi.pages.dev/ — Chrome DevTools or pagespeed.web.dev, both mobile and desktop, ideally on the homepage and one image-heavy essay. Send back the scores and anything flagged; that closes out Phase 3.
-2. **Newsletter signup** — you're on this now. Once you have a Buttondown account and API key, that resumes Phase 2's last open item.
-3. **Fill in real content** — the About page, the Now page, and your first real project/tutorial/project-log post are all currently placeholders or templates waiting on your real words.
-4. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.
+2. **Fill in real content** — the About page, the Now page, and your first real project/tutorial/project-log post are all currently placeholders or templates waiting on your real words.
+3. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.

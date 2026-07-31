@@ -8,7 +8,7 @@ Keep it lean — details live in the Context Files at the bottom. Update Current
 ## Project Overview & Stack
 **App:** Ayosotomi.com
 **Overview:** A minimalist personal "digital home" for Ayomiposi Sotomi — one owned, privacy-respecting site that unifies writing (migrated from Substack), homelab/Docker/cybersecurity project write-ups, and a living "Now" page. It replaces a fragmented presence across Substack, GitHub, and social platforms, and serves three audiences at once: friends who want to keep up, potential clients assessing capability, and homelab/Docker newcomers looking for relatable tutorials.
-**Stack:** Astro 7.x + TypeScript (strict), Tailwind CSS 4.x (CSS-first config via `@theme` in `src/styles/global.css` — no `tailwind.config.mjs`) + `@tailwindcss/typography`, Markdown via Astro Content Collections (Zod schemas), Cloudflare Pages hosting, Cusdis (self-hosted comments), Buttondown (newsletter), Cloudflare Web Analytics.
+**Stack:** Astro 7.x + TypeScript (strict), Tailwind CSS 4.x (CSS-first config via `@theme` in `src/styles/global.css` — no `tailwind.config.mjs`) + `@tailwindcss/typography`, Markdown via Astro Content Collections (Zod schemas), Cloudflare Pages hosting, Cusdis (self-hosted comments), Buttondown (newsletter — secretless: `NewsletterForm.astro` posts straight to Buttondown's public embed-subscribe endpoint, no API key or backend involved), Cloudflare Web Analytics.
 **Critical Constraints:** Free-tier only ($0/month — no paid services until post-launch), mobile-first responsive, zero JS by default (opt in only where interactivity is essential), no database and no user accounts (Markdown + Git is the data layer), GDPR-compliant by design (no cookies, no third-party trackers).
 
 ## Setup & Commands
@@ -21,10 +21,10 @@ Execute these commands for standard development workflows. Do not invent new pac
 
 ## Protected Areas 🛡️
 Do NOT modify these without explicit human approval:
-- **Secrets:** NEVER commit `.env` files or hardcode API keys, tokens, or passwords (`BUTTONDOWN_API_KEY`, `CUSDIS_HOST`, `CUSDIS_APP_ID`). Use Cloudflare Pages environment variables and ask the human to set them up.
+- **Secrets:** NEVER commit `.env` files or hardcode API keys, tokens, or passwords (`CUSDIS_HOST`, `CUSDIS_APP_ID`, and any future ones). Use Cloudflare Pages environment variables and ask the human to set them up. **Newsletter signup deliberately has no secret** — it posts to Buttondown's public embed-subscribe endpoint (see `NewsletterForm.astro`), a considered choice to keep the site fully static (see `MEMORY.md`, 2026-07-31). Don't reintroduce an API key for this without checking with the human first.
 - **Infrastructure:** Cloudflare Pages build settings, `astro.config.mjs` deployment adapter config, and any GitHub Actions workflows.
 - **Content Schema:** `src/content.config.ts` — changing a field's type or removing a required field breaks every existing Markdown file's frontmatter. Confirm with the human and update affected content before changing it.
-- **Third-Party Integrations:** Cusdis self-hosting config and Buttondown API integration — these touch real subscriber/comment data.
+- **Third-Party Integrations:** Cusdis self-hosting config and the Buttondown subscriber flow — these touch real subscriber/comment data.
 
 ## Coding Conventions
 - **Formatting:** Prettier (default config) + ESLint via VS Code extension — no warnings in new code.
@@ -64,9 +64,9 @@ Do NOT modify these without explicit human approval:
 
 ## Current State 📍
 **Last Updated:** 2026-07-31
-**Working On:** Phase 3 done except the Lighthouse score (needs the human). Phase 4 (Launch): SEO done, security pass done.
-**Recently Completed:** Security pass — `scripts/generate-headers.mjs` runs as a `postbuild` step, scans the actual build output for inline `<script>` tags, and writes `dist/_headers` with a CSP (script-src hash-locked to exactly what's really inline, generated fresh every build so it can't go stale) plus HSTS/X-Frame-Options/Referrer-Policy/Permissions-Policy. Verified with zero CSP console errors serving `dist/` locally in a real browser (dark-mode toggle + Writing category filter both tested). Added `.github/dependabot.yml` (weekly npm updates); `npm audit` clean; grepped full git history, no real secrets ever committed. Before that: SEO pass (canonical URLs, OpenGraph/Twitter cards, sitemap, robots.txt). See `MEMORY.md` for full detail on both.
-**Blocked By:** Newsletter Signup needs a Buttondown account + API key from the human (in progress). Lighthouse score needs the human's Chrome.
+**Working On:** Phase 2's last open item (Newsletter) is done. Phase 3 done except the Lighthouse score (needs the human). Phase 4 (Launch): SEO done, security pass done.
+**Recently Completed:** Newsletter signup — `NewsletterForm.astro` in `Footer.astro` and at the end of `PostLayout.astro`, posting straight to Buttondown's public embed-subscribe endpoint (no API key, no backend — a deliberate architecture call the human approved, see `MEMORY.md`). `privacy.astro` updated to describe what Buttondown collects. Verified in a real browser (form present, correctly styled in both themes, no console/CSP errors, `npx astro check` and `npm run build` both clean). Before that: security pass (`scripts/generate-headers.mjs` generates build-time CSP/security headers, Dependabot enabled) and an SEO pass (canonical URLs, OpenGraph/Twitter cards, sitemap, robots.txt). See `MEMORY.md` for full detail on all three.
+**Blocked By:** Lighthouse score needs the human's Chrome (last item blocking Phase 3).
 
 ## Roadmap 🗺️
 
@@ -82,7 +82,7 @@ Do NOT modify these without explicit human approval:
 - [x] Writing Section — Markdown blog posts filterable by category, individual post pages with syntax highlighting (Shiki, built-in), reading time, related posts, RSS feed
 - [x] Projects Section — homelab/Docker/cybersecurity project write-ups with status badges, tech tags, GitHub/demo links
 - [x] Now Page — living document (Working on / Learning / Reading / Tools) with a "last updated" date
-- [ ] Newsletter Signup — non-imposing Buttondown form in the footer and at the end of posts, GDPR-compliant (blocked: needs a Buttondown account/API key from the human)
+- [x] Newsletter Signup — non-imposing Buttondown form in the footer and at the end of posts, GDPR-compliant (double opt-in, one-click unsubscribe, documented in `privacy.astro`)
 
 ### Phase 3: Polish
 - [x] About page and Privacy Policy page

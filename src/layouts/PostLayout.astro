@@ -5,6 +5,7 @@ import { getImage } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import ReadingTime from '../components/ReadingTime.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
 import { formatDate } from '../lib/utils';
 
 interface Props {
@@ -56,6 +57,10 @@ const ogImage = coverImage ? (await getImage({ src: coverImage })).src : undefin
       class="prose prose-neutral mt-10 max-w-none prose-blockquote:my-8 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:font-serif prose-blockquote:text-xl prose-blockquote:font-normal prose-blockquote:not-italic prose-blockquote:text-text"
     >
       <slot />
+    </div>
+
+    <div class="mt-16 border-t border-border pt-10">
+      <NewsletterForm heading="Enjoyed this? Get new posts by email" />
     </div>
 
     {
