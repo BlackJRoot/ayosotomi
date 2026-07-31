@@ -64,9 +64,9 @@ Do NOT modify these without explicit human approval:
 
 ## Current State 📍
 **Last Updated:** 2026-07-31
-**Working On:** Phase 3 done except the Lighthouse score (needs the human). Phase 4 (Launch) started: SEO done.
-**Recently Completed:** SEO pass — `BaseLayout.astro` now emits canonical URLs, OpenGraph, and Twitter Card meta tags; `PostLayout.astro` reuses the homepage's featured-cover convention as each post's social-share image; `@astrojs/sitemap` generates a sitemap automatically at build; `public/robots.txt` added; RSS feed checked and confirmed valid. `npm run build` + `npx astro check` clean, dev-server smoke test passed. See `MEMORY.md` for full detail.
-**Blocked By:** Newsletter Signup needs a Buttondown account + API key from the human before it can be built. Lighthouse score needs the human's Chrome.
+**Working On:** Phase 3 done except the Lighthouse score (needs the human). Phase 4 (Launch): SEO done, security pass done.
+**Recently Completed:** Security pass — `scripts/generate-headers.mjs` runs as a `postbuild` step, scans the actual build output for inline `<script>` tags, and writes `dist/_headers` with a CSP (script-src hash-locked to exactly what's really inline, generated fresh every build so it can't go stale) plus HSTS/X-Frame-Options/Referrer-Policy/Permissions-Policy. Verified with zero CSP console errors serving `dist/` locally in a real browser (dark-mode toggle + Writing category filter both tested). Added `.github/dependabot.yml` (weekly npm updates); `npm audit` clean; grepped full git history, no real secrets ever committed. Before that: SEO pass (canonical URLs, OpenGraph/Twitter cards, sitemap, robots.txt). See `MEMORY.md` for full detail on both.
+**Blocked By:** Newsletter Signup needs a Buttondown account + API key from the human (in progress). Lighthouse score needs the human's Chrome.
 
 ## Roadmap 🗺️
 
@@ -95,7 +95,7 @@ Do NOT modify these without explicit human approval:
 - [ ] Comments (Cusdis) — self-hosted on Railway free tier, embedded on posts, moderation tested
 - [ ] Analytics — enable Cloudflare Web Analytics
 - [x] SEO — canonical URLs, OpenGraph/Twitter cards (post covers used as share images), sitemap (`@astrojs/sitemap`), `robots.txt`, RSS feed checked valid
-- [ ] Security pass (see `REVIEW-CHECKLIST.md`) — CSP/HSTS headers, `npm audit`, Dependabot enabled, no secrets in Git history
+- [x] Security pass (see `REVIEW-CHECKLIST.md`) — CSP (script hashes generated at build time)/HSTS/other security headers via `scripts/generate-headers.mjs` → `dist/_headers`, `npm audit` clean, Dependabot enabled (`.github/dependabot.yml`), no secrets found in Git history
 - [ ] Deploy to production (`.pages.dev`, custom domain optional post-launch)
 - [ ] Beta launch checklist — shared with 5+ friends, all P0 features functional
 
