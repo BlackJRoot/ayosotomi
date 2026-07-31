@@ -7,7 +7,7 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-07-31 (newsletter signup)
+**Last updated:** 2026-07-31 (newsletter polish)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
@@ -28,7 +28,8 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 - **Writing section** includes category filtering, syntax-highlighted code blocks, reading time, related posts, category-scoped Previous/Next navigation, and an RSS feed.
 - **Substack migration:** your 4 real essays were migrated from your Substack export (not scraped — you provided the export directly, since live-scraping your own site ran into copyright-reproduction limits regardless of authorship). One dropped quote (a `callout-block` structure the converter missed) was caught and fixed after you compared against a screenshot of the real Substack page.
 - **Blockquote/pull-quote styling** added so quoted material and emphasized lines read distinctly from body text.
-- **Newsletter signup ✅** — a signup form now lives in the footer of every page and at the end of every post. It posts your email straight to Buttondown, with no server or API key involved on this site's side at all (more on that choice below). Double opt-in and one-click unsubscribe are both on, and the privacy policy now describes exactly what Buttondown collects.
+- **Newsletter signup ✅** — a signup form lives at the end of every post and in the footer of every page *except the homepage*, which you asked to keep bare. It posts your email straight to Buttondown, with no server or API key involved on this site's side at all (more on that choice below). Double opt-in and one-click unsubscribe are both on, and the privacy policy now describes exactly what Buttondown collects. The footer heading also changes depending on what section you're on ("New writing, straight to your inbox" on writing pages, "Curious what's next? New write-ups by email." on Projects, "Want more of this? Occasional emails, no spam." on About/Now) instead of one line everywhere.
+- **RSS feed now carries full post content**, not just the one-line excerpt — needed groundwork either way (any feed reader benefits), and specifically needed if you ever turn on Buttondown's RSS-to-email automation (see below). One known limitation: inline images inside a post body won't render in the feed — only affects posts with images embedded in the body text, not the featured cover image.
 
 ## Phase 3 — Polish ✅ (except the Lighthouse score)
 
@@ -58,9 +59,11 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 - **Cover images use a folder convention, not a schema field** (`src/assets/covers/<post-slug>.<ext>`) — avoids touching the content schema (a Protected Area) while still getting full image optimization. Documented in `specs/content-guide.md`.
 - **AI-authored content is never published live without your review.** Every piece of sample/placeholder content this project generated — draft blog posts, the About page copy, project write-ups, Now content — was either marked `draft: true`, clearly labeled `[Template]`, or held for your explicit sign-off before going live. This was treated as a hard rule throughout, not a one-off.
 - **Newsletter signup has no API key, on purpose.** The original plan called for a Buttondown API key and a bit of server-side code to use it safely. Since this site has no server, that would've meant adding one just for this — a real change to how the whole site works, not just a feature. Buttondown has a public signup endpoint made for exactly this situation (plain static sites), so the form uses that instead: no key, nothing new to secure, and the site stays exactly as simple as it's been from day one. If you ever want extras that genuinely need the API (a live subscriber count, custom confirmation emails), that's the point to revisit this — not before.
+- **RSS-to-email automation (Buttondown watching your feed and drafting/sending emails for you) is real and exists, but costs +$9/month** and you decided to hold off for now. If you turn it on later, use "create a draft" mode rather than auto-send, so you still get a last look before anything goes out.
 
 ## Next steps
 
 1. **Run Lighthouse** (Performance + Accessibility) against https://ayosotomi.pages.dev/ — Chrome DevTools or pagespeed.web.dev, both mobile and desktop, ideally on the homepage and one image-heavy essay. Send back the scores and anything flagged; that closes out Phase 3.
-2. **Fill in real content** — the About page, the Now page, and your first real project/tutorial/project-log post are all currently placeholders or templates waiting on your real words.
-3. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.
+2. **Buttondown branding, dashboard-side (not code):** update the Archives page (accent color, background, fonts, blockquote style — I gave you exact values earlier) to match the site, and check whether "Custom CSS" under Settings → Email is free on your plan or paywalled — I have a ready-to-paste CSS snippet for the latter once you know.
+3. **Fill in real content** — the About page, the Now page, and your first real project/tutorial/project-log post are all currently placeholders or templates waiting on your real words.
+4. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.
