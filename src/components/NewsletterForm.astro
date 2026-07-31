@@ -1,0 +1,52 @@
+---
+// Posts straight to Buttondown's public embed-subscribe endpoint -- no API
+// key, no backend. Submitting opens a small popup showing Buttondown's own
+// confirmation page; without JS, the form's `target` attribute alone still
+// opens a new tab there (native <form> behavior), so this degrades cleanly.
+const BUTTONDOWN_USERNAME = 'ayosotomi';
+const ACTION = `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`;
+const POPUP_URL = `https://buttondown.com/${BUTTONDOWN_USERNAME}`;
+
+interface Props {
+  heading?: string;
+}
+
+const { heading = 'Get new posts by email' } = Astro.props;
+---
+
+<div class="newsletter">
+  <p class="font-serif text-lg text-text">{heading}</p>
+  <p class="mt-1 text-sm text-text-secondary">
+    Occasional writing, nothing else. Unsubscribe anytime.
+  </p>
+  <form
+    class="newsletter-form mt-4 flex flex-col gap-3 sm:flex-row"
+    action={ACTION}
+    method="post"
+    target="popupwindow"
+  >
+    <input
+      type="email"
+      name="email"
+      required
+      aria-label="Email address"
+      placeholder="you@example.com"
+      class="w-full rounded-md border border-border bg-bg px-4 py-2 text-sm text-text placeholder:text-text-secondary transition-colors duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-accent sm:max-w-xs"
+    />
+    <input type="hidden" name="embed" value="1" />
+    <button
+      type="submit"
+      class="shrink-0 rounded-md border border-accent bg-accent/10 px-5 py-2 text-sm font-medium text-accent transition-colors duration-300 hover:bg-accent hover:text-bg"
+    >
+      Subscribe
+    </button>
+  </form>
+</div>
+
+<script is:inline define:vars={{ POPUP_URL }}>
+  document.querySelectorAll('form.newsletter-form').forEach((form) => {
+    form.addEventListener('submit', () => {
+      window.open(POPUP_URL, 'popupwindow', 'width=600,height=700');
+    });
+  });
+</script>
