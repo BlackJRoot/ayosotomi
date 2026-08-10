@@ -45,7 +45,7 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 
 ## Phase 3 — Polish ✅ (except the Lighthouse score)
 
-- **About, Privacy Policy, custom 404 pages** built. About is intentionally draft-marked copy for you to personalize; Privacy describes only what's actually live (no cookies, Cloudflare Web Analytics only).
+- **About, Privacy Policy, custom 404 pages** built. About is intentionally draft-marked copy for you to personalize; Privacy describes only what's actually live (no cookies, no analytics yet — caught and fixed a stale claim that Analytics was already live when it wasn't, see 2026-08-10 below).
 - **Homepage redesign** — went from a bare hero to an editorial layout: first-person greeting, a botanical sprig, a "Currently" pulse pulled live from the Now page, three navigation "bed" cards, and a featured-essay block with an optimized cover thumbnail. Went through several rounds of visual mockups before any code was written.
 - **Dark Mode** — went well beyond the original spec (which just called for a time-based light/dark split) at your request to make it "much better": a three-state Auto/Light/Dark toggle (bookending your name in the header), Auto mode respects your OS preference before falling back to the clock, dual light/dark syntax-highlighting themes for code blocks, and a real bug fix along the way (article body text was briefly invisible in dark mode due to Tailwind Typography's own hardcoded colors).
 - **Writing index polish** — a read/unread indicator bullet (uses the browser's native link-visited history, zero JavaScript) and a half-width divider between posts.
