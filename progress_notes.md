@@ -7,7 +7,7 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-08-10 (Now page CLI)
+**Last updated:** 2026-08-10 (content tooling)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
@@ -17,11 +17,17 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 
 ---
 
-## Side project: `npm run now`
+## Side project: content tooling
 
-Not part of the phased roadmap — a small standalone tool you asked for. Run `npm run now` and it walks you through updating the Now page one field at a time: shows your current values so you can just press Enter to keep them, lets you attach a link to any item, and won't let you save something that breaks the page's structure (it checks against the same rules the site itself uses before writing anything). Each run saves a new dated file rather than overwriting your history — the Now page already picks whichever entry is newest, so nothing extra to manage there. It doesn't commit or push anything for you.
+Not part of the phased roadmap — a set of tools you asked for, built and tested over several rounds. `npm run content` opens one menu for everything below (or run any of them directly):
 
-One honest caveat: I verified all the underlying logic directly (file handling, link formatting, validation, the actual file it writes), but I can't fully drive an interactive prompt session myself in this environment — so you're the first real test of how it actually feels to use. Try it and tell me if anything's off.
+- `npm run now` — update the Now page
+- `npm run new-post` — scaffold a new essay/tutorial/project-log
+- `npm run new-project` — scaffold a new project (this collection has no draft field, so it asks you to confirm before going live)
+
+All three show one menu from the start — every field is editable at any time, in any order, with a "Quit" option always available and a clean Ctrl+C (no more error stack traces). They validate against the site's real schemas before writing anything, and `new-post`/`new-project` offer to open the file in your editor the moment it's saved. None of them touch git — you review and commit yourself. Fully tested by you in a real terminal, not just verified by me in isolation.
+
+**README.md** was also rewritten — it was still the untouched generic Astro starter template, now describes the actual project.
 
 ## Phase 1 — Foundation ✅
 
@@ -70,6 +76,6 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 ## Next steps
 
 1. **Run Lighthouse** (Performance + Accessibility) against https://ayosotomi.pages.dev/ — Chrome DevTools or pagespeed.web.dev, both mobile and desktop, ideally on the homepage and one image-heavy essay. Send back the scores and anything flagged; that closes out Phase 3.
-2. **Buttondown branding, dashboard-side (not code):** update the Archives page (accent color, background, fonts, blockquote style — I gave you exact values earlier) to match the site, and check whether "Custom CSS" under Settings → Email is free on your plan or paywalled — I have a ready-to-paste CSS snippet for the latter once you know.
-3. **Fill in real content** — the About page, the Now page, and your first real project/tutorial/project-log post are all currently placeholders or templates waiting on your real words.
-4. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.
+2. **Fill in real content** — the About page, and your first real project/tutorial/project-log post, are still placeholders or templates waiting on your real words. (The Now page is done — it has your real content now.) `npm run new-post` / `npm run new-project` make this easier than hand-editing.
+3. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.
+4. **Optional, whenever you feel like it:** Buttondown branding, dashboard-side (not code) — update the Archives page to match the site (I gave you exact values earlier), and check whether "Custom CSS" under Settings → Email is free on your plan.
