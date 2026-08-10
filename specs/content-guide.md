@@ -15,6 +15,8 @@ src/content/projects/           →  listed on /projects
 
 The `blog` collection covers all three of essays, tutorials, and project-logs — they all live under `src/content/blog/`, split into subfolders by type, and share one Zod schema. `projects` is a separate collection with its own schema.
 
+**Quickest path into any of this: `npm run content`.** Shows a menu (Now page / new blog post / new project) and hands off to whichever tool you pick — same tools described below, just one command to remember instead of three.
+
 ## Adding a new blog post (essay / tutorial / project-log)
 
 **Easiest way: `npm run new-post`.** Interactive CLI — asks what kind of post it is (and derives the right subfolder *and* `category` from that single answer, so they can't drift out of sync), title and description with live SEO length counters, tags (suggested from what's already used elsewhere on the site, plus freeform), published date, and draft status. Validates against the real schema before writing anything, and shows a review screen before it commits. It only ever writes frontmatter — the body is always yours to write by hand afterward.
@@ -43,6 +45,10 @@ To do it by hand instead:
 5. **Leave `draft: true`** until it's ready, then flip to `false` to publish.
 
 ## Adding a new project
+
+**Easiest way: `npm run new-project`.** Interactive CLI — title, description, status (picked from the real enum, not free text), tech tags (suggested from what's already used on other projects, plus freeform), dates, GitHub/demo URLs (validated before it ever writes anything). **This collection has no `draft` field**, so the CLI is deliberately stricter than the blog-post one about it — it asks you to confirm you really want to publish before saving, since there's no staging step to undo a mistake with. Only ever writes frontmatter — the body is always yours to write by hand afterward.
+
+To do it by hand instead:
 
 1. Add a file to `src/content/projects/`, e.g. `src/content/projects/my-new-thing.md`.
 2. Copy `example-project.md` as a starting structure, or use these frontmatter fields:

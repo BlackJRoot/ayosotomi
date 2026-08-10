@@ -174,7 +174,7 @@ function printSummary(data: NowData): void {
   console.log('\n────────────────────────');
 }
 
-async function main() {
+export async function main() {
   console.log(
     "Editing your Now page — press Enter to keep a value shown as a default, or leave blank to stop a section early.\n"
   );

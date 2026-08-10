@@ -166,7 +166,7 @@ function printSummary(data: PostData, folder: string): void {
   console.log('────────────────────────');
 }
 
-async function main() {
+export async function main() {
   console.log('Scaffolding a new blog post — this only writes the frontmatter, never the body.\n');
 
   const existingTags = await loadExistingTags();
