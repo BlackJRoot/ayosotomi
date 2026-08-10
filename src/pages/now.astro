@@ -1,7 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { formatDate } from '../lib/utils';
+import { formatDate, parseInlineLinks } from '../lib/utils';
+
+const linkClass =
+  'text-link underline decoration-border underline-offset-2 transition-colors duration-300 hover:text-accent';
 
 const nowEntries = await getCollection('now');
 const current = nowEntries.sort(
@@ -46,7 +49,18 @@ const extras = [
             </h2>
             <ul class="space-y-2">
               {items.map((item) => (
-                <li class="text-text">→ {item}</li>
+                <li class="text-text">
+                  →{' '}
+                  {parseInlineLinks(item).map((seg) =>
+                    seg.href ? (
+                      <a href={seg.href} class={linkClass} target="_blank" rel="noopener noreferrer">
+                        {seg.text}
+                      </a>
+                    ) : (
+                      seg.text
+                    )
+                  )}
+                </li>
               ))}
             </ul>
           </div>
@@ -62,7 +76,22 @@ const extras = [
               {i > 0 && <span class="mx-2">·</span>}
               <span>
                 <span class="text-text-secondary/80">{label}:</span>{' '}
-                <span class="text-text">{items.join(', ')}</span>
+                <span class="text-text">
+                  {items.map((item, itemIndex) => (
+                    <>
+                      {itemIndex > 0 && ', '}
+                      {parseInlineLinks(item).map((seg) =>
+                        seg.href ? (
+                          <a href={seg.href} class={linkClass} target="_blank" rel="noopener noreferrer">
+                            {seg.text}
+                          </a>
+                        ) : (
+                          seg.text
+                        )
+                      )}
+                    </>
+                  ))}
+                </span>
               </span>
             </>
           ))}
