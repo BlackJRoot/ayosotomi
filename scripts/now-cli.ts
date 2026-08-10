@@ -11,7 +11,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { input, confirm } from '@inquirer/prompts';
+import { input, confirm, select } from '@inquirer/prompts';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { nowSchema } from '../src/content/now.schema';
 import { parseInlineLinks } from '../src/lib/utils';
@@ -30,17 +30,26 @@ interface NowData {
   doing?: string[];
 }
 
-const REQUIRED_FIELDS: { key: keyof NowData; label: string; max: number }[] = [
-  { key: 'workingOn', label: 'Working on', max: 5 },
-  { key: 'learning', label: 'Learning', max: 5 },
-  { key: 'reading', label: 'Reading', max: 5 },
-  { key: 'tools', label: 'Tools', max: 5 },
+interface FieldDef {
+  key: keyof NowData;
+  label: string;
+  max: number;
+  optional: boolean;
+}
+
+const REQUIRED_FIELDS: FieldDef[] = [
+  { key: 'workingOn', label: 'Working on', max: 5, optional: false },
+  { key: 'learning', label: 'Learning', max: 5, optional: false },
+  { key: 'reading', label: 'Reading', max: 5, optional: false },
+  { key: 'tools', label: 'Tools', max: 5, optional: false },
 ];
 
-const OPTIONAL_FIELDS: { key: keyof NowData; label: string; max: number }[] = [
-  { key: 'watching', label: 'Watching', max: 3 },
-  { key: 'doing', label: 'Doing', max: 3 },
+const OPTIONAL_FIELDS: FieldDef[] = [
+  { key: 'watching', label: 'Watching', max: 3, optional: true },
+  { key: 'doing', label: 'Doing', max: 3, optional: true },
 ];
+
+const ALL_FIELDS = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS];
 
 export function splitFrontmatter(raw: string): Record<string, unknown> {
   const match = raw.match(/^---\n([\s\S]*?)\n---/);
@@ -94,19 +103,15 @@ async function promptItem(existing?: string): Promise<string | null> {
   });
   if (!text.trim()) return null;
 
-  const wantsLink = await confirm({
-    message: '  Add a link?',
-    default: !!seed.href,
+  // One optional prompt instead of a "want a link? y/n" step followed by
+  // a separate URL prompt -- Enter skips it, so items that never want a
+  // link (most Tools/Working-on entries) cost one keystroke, not two.
+  const hrefInput = await input({
+    message: '  Link (optional, Enter to skip)',
+    default: seed.href ?? '',
+    validate: (value) => !value.trim() || URL_PATTERN.test(value.trim()) || 'Must start with http:// or https://',
   });
-
-  let href: string | undefined;
-  if (wantsLink) {
-    href = await input({
-      message: '  URL',
-      default: seed.href,
-      validate: (value) => URL_PATTERN.test(value) || 'Must start with http:// or https://',
-    });
-  }
+  const href = hrefInput.trim() || undefined;
 
   return composeValue(text.trim(), href);
 }
@@ -147,6 +152,33 @@ async function promptOptionalList(
   return values.length > 0 ? values : undefined;
 }
 
+async function promptField(field: FieldDef, data: NowData): Promise<void> {
+  if (field.optional) {
+    const values = await promptOptionalList(field.label, field.max, data[field.key] as string[] | undefined);
+    if (values) {
+      (data[field.key] as string[] | undefined) = values;
+    } else {
+      delete data[field.key];
+    }
+  } else {
+    (data[field.key] as string[]) = await promptList(field.label, field.max, (data[field.key] as string[]) ?? []);
+  }
+}
+
+function printSummary(data: NowData): void {
+  console.log('\n──────── Review ────────');
+  for (const field of ALL_FIELDS) {
+    const values = data[field.key] as string[] | undefined;
+    console.log(`\n${field.label}:`);
+    if (!values || values.length === 0) {
+      console.log('  (none)');
+    } else {
+      for (const value of values) console.log(`  → ${value}`);
+    }
+  }
+  console.log('\n────────────────────────');
+}
+
 async function main() {
   console.log(
     "Editing your Now page — press Enter to keep a value shown as a default, or leave blank to stop a section early.\n"
@@ -157,19 +189,46 @@ async function main() {
 
   const data: NowData = {
     updatedAt: dateStr,
-    workingOn: [],
-    learning: [],
-    reading: [],
-    tools: [],
+    workingOn: (latest.workingOn as string[]) ?? [],
+    learning: (latest.learning as string[]) ?? [],
+    reading: (latest.reading as string[]) ?? [],
+    tools: (latest.tools as string[]) ?? [],
+    ...(latest.watching ? { watching: latest.watching as string[] } : {}),
+    ...(latest.doing ? { doing: latest.doing as string[] } : {}),
   };
 
-  for (const field of REQUIRED_FIELDS) {
-    (data[field.key] as string[]) = await promptList(field.label, field.max, (latest[field.key] as string[]) ?? []);
+  for (const field of ALL_FIELDS) {
+    await promptField(field, data);
   }
 
-  for (const field of OPTIONAL_FIELDS) {
-    const values = await promptOptionalList(field.label, field.max, latest[field.key] as string[] | undefined);
-    if (values) (data[field.key] as string[] | undefined) = values;
+  // Review loop: keep showing the summary and letting the human either
+  // save, jump back into any single field to fix it, or bail out
+  // entirely -- rather than writing immediately after the last prompt
+  // with no chance to catch a typo without starting over.
+  while (true) {
+    printSummary(data);
+
+    const action = await select({
+      message: '\nWhat next?',
+      choices: [
+        { name: 'Save', value: 'save' as const },
+        { name: 'Edit a field', value: 'edit' as const },
+        { name: 'Cancel (discard everything)', value: 'cancel' as const },
+      ],
+    });
+
+    if (action === 'cancel') {
+      console.log('Cancelled. Nothing was written.');
+      return;
+    }
+    if (action === 'save') break;
+
+    const fieldKey = await select({
+      message: 'Which field?',
+      choices: ALL_FIELDS.map((field) => ({ name: field.label, value: field.key })),
+    });
+    const field = ALL_FIELDS.find((f) => f.key === fieldKey)!;
+    await promptField(field, data);
   }
 
   const result = nowSchema.safeParse(data);
