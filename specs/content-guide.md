@@ -15,11 +15,13 @@ src/content/projects/           →  listed on /projects
 
 The `blog` collection covers all three of essays, tutorials, and project-logs — they all live under `src/content/blog/`, split into subfolders by type, and share one Zod schema. `projects` is a separate collection with its own schema.
 
-**Quickest path into any of this: `npm run content`.** Shows a menu (Now page / new blog post / new project) and hands off to whichever tool you pick — same tools described below, just one command to remember instead of three.
+**Quickest path into any of this: `npm run content`.** Shows a menu (Now page / new blog post / edit a blog post / new project / edit a project) and hands off to whichever tool you pick — same tools described below, just one command to remember.
 
 ## Adding a new blog post (essay / tutorial / project-log)
 
 **Easiest way: `npm run new-post`.** Interactive CLI — one menu from the start, showing every field (post type, title/description with live SEO length counters, tags suggested from what's already used elsewhere on the site, published date, draft status) and letting you jump to any of them, in any order, as many times as you want, before choosing Save. Post type derives both the right subfolder *and* the `category` field from a single answer, so they can't drift out of sync. Validates against the real schema before writing anything, and a "Quit" choice is always in the menu if you want to discard everything — nothing is ever written before the final Save. It only ever writes frontmatter — the body is always yours to write by hand afterward, and it'll offer to open the new file in `$EDITOR`/`$VISUAL` right after saving.
+
+**Already-published post, need to fix something? `npm run edit-post`.** Same menu, but for a post you pick from a list of everything that already exists. The body is read once and carried through completely untouched — only frontmatter ever changes. Changing the slug or post type *moves* the file (with a confirm first, since that changes the post's live URL) rather than creating a duplicate.
 
 To do it by hand instead:
 
@@ -47,6 +49,8 @@ To do it by hand instead:
 ## Adding a new project
 
 **Easiest way: `npm run new-project`.** Interactive CLI — title, description, status (picked from the real enum, not free text), tech tags (suggested from what's already used on other projects, plus freeform), dates, GitHub/demo URLs (validated before it ever writes anything). **This collection has no `draft` field**, so the CLI is deliberately stricter than the blog-post one about it — it asks you to confirm you really want to publish before saving, since there's no staging step to undo a mistake with. Only ever writes frontmatter — the body is always yours to write by hand afterward, and it'll offer to open the new file in `$EDITOR`/`$VISUAL` right after saving.
+
+**Already-published project, need to fix something? `npm run edit-project`.** Same menu, for a project you pick from a list of everything that already exists. Body carried through untouched, slug changes move the file with a confirm first — same caveats as `edit-post`, plus the same "no draft field, this is live" warning `new-project` gives you.
 
 To do it by hand instead:
 

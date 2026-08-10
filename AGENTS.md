@@ -20,9 +20,9 @@ Execute these commands for standard development workflows. Do not invent new pac
 - **Build:** `npm run build` — outputs the static site to `dist/`, deployed to Cloudflare Pages
 - **Content tools (all dev-only, never run during build/deploy):** `npm run content` shows a menu of everything below, or run any of them directly:
   - `npm run now` — interactive editor for the Now page (`scripts/now-cli.ts`)
-  - `npm run new-post` — scaffolds a new blog post (`scripts/new-post-cli.ts`)
-  - `npm run new-project` — scaffolds a new project (`scripts/new-project-cli.ts`) — **no draft field on this collection, goes live immediately**
-  - All three validate against the site's real Zod schemas (`src/content/*.schema.ts`) before writing anything, and only ever write frontmatter — body content is always written by hand. See `specs/content-guide.md`.
+  - `npm run new-post` / `npm run edit-post` — scaffold a new blog post, or edit an existing one (`scripts/new-post-cli.ts` / `scripts/edit-post-cli.ts`)
+  - `npm run new-project` / `npm run edit-project` — scaffold a new project, or edit an existing one (`scripts/new-project-cli.ts` / `scripts/edit-project-cli.ts`) — **no draft field on this collection, goes live immediately**
+  - All five validate against the site's real Zod schemas (`src/content/*.schema.ts`) before writing anything, and only ever touch frontmatter — body content is always written by hand and the `edit-*` tools carry an existing post/project's body through byte-for-byte, untouched. See `specs/content-guide.md`.
 
 ## Protected Areas 🛡️
 Do NOT modify these without explicit human approval:
