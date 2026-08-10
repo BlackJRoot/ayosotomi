@@ -1,5 +1,40 @@
 const WORDS_PER_MINUTE = 200;
 
+export interface TextSegment {
+  text: string;
+  href?: string;
+}
+
+// Only http(s) links -- deliberately no javascript:/data: etc, since this
+// parses plain-text content-collection strings (e.g. the Now page's
+// watching/reading items) that aren't otherwise sanitized as HTML.
+const INLINE_LINK_PATTERN = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+// Parses `[text](https://...)` Markdown-link syntax out of an otherwise
+// plain string into renderable segments, for fields that are typed as
+// plain strings (not run through a Markdown renderer) but where someone
+// still writes a link the way they would in a post body.
+export function parseInlineLinks(text: string): TextSegment[] {
+  const segments: TextSegment[] = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(INLINE_LINK_PATTERN)) {
+    const [full, linkText, href] = match;
+    const start = match.index ?? 0;
+    if (start > lastIndex) {
+      segments.push({ text: text.slice(lastIndex, start) });
+    }
+    segments.push({ text: linkText, href });
+    lastIndex = start + full.length;
+  }
+
+  if (lastIndex < text.length) {
+    segments.push({ text: text.slice(lastIndex) });
+  }
+
+  return segments.length > 0 ? segments : [{ text }];
+}
+
 export function calculateReadingTime(content: string): number {
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(wordCount / WORDS_PER_MINUTE));
@@ -26,5 +61,29 @@ if (import.meta.env.DEV) {
   console.assert(
     formatDate(new Date('2026-07-23')) === 'July 23, 2026',
     'formatDate: should render as "Month D, YYYY" in UTC, regardless of build-server timezone'
+  );
+  console.assert(
+    parseInlineLinks('plain text, no links').length === 1 &&
+      parseInlineLinks('plain text, no links')[0].href === undefined,
+    'parseInlineLinks: plain text should come back as a single segment with no href'
+  );
+  console.assert(
+    (() => {
+      const segs = parseInlineLinks('[Death Note](https://example.com/dn)');
+      return segs.length === 1 && segs[0].text === 'Death Note' && segs[0].href === 'https://example.com/dn';
+    })(),
+    'parseInlineLinks: a string that is entirely one link should produce one segment with both text and href'
+  );
+  console.assert(
+    (() => {
+      const segs = parseInlineLinks('see [this](https://example.com) for more');
+      return (
+        segs.length === 3 &&
+        segs[0].text === 'see ' &&
+        segs[1].href === 'https://example.com' &&
+        segs[2].text === ' for more'
+      );
+    })(),
+    'parseInlineLinks: a link surrounded by plain text should split into three segments'
   );
 }
