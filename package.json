@@ -15,6 +15,7 @@
     "new-project": "tsx scripts/new-project-cli.ts",
     "edit-post": "tsx scripts/edit-post-cli.ts",
     "edit-project": "tsx scripts/edit-project-cli.ts",
+    "validate-content": "tsx scripts/validate-content.ts",
     "preview": "astro preview",
     "astro": "astro"
   },

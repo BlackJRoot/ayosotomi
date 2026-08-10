@@ -22,10 +22,11 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 Not part of the phased roadmap — a set of tools you asked for, built and tested over several rounds. `npm run content` opens one menu for everything below (or run any of them directly):
 
 - `npm run now` — update the Now page
-- `npm run new-post` — scaffold a new essay/tutorial/project-log
-- `npm run new-project` — scaffold a new project (this collection has no draft field, so it asks you to confirm before going live)
+- `npm run new-post` / `npm run edit-post` — scaffold a new essay/tutorial/project-log, or fix one that already exists
+- `npm run new-project` / `npm run edit-project` — scaffold a new project, or fix one that already exists (this collection has no draft field, so both ask you to confirm before anything goes live)
+- `npm run validate-content` — a non-interactive check you can run any time: validates every content file against the real rules, plus catches the two specific mistakes we found by hand in the Now page early on (things crammed into one comma-separated entry, unedited placeholder text left behind)
 
-All three show one menu from the start — every field is editable at any time, in any order, with a "Quit" option always available and a clean Ctrl+C (no more error stack traces). They validate against the site's real schemas before writing anything, and `new-post`/`new-project` offer to open the file in your editor the moment it's saved. None of them touch git — you review and commit yourself. Fully tested by you in a real terminal, not just verified by me in isolation.
+All the interactive ones show one menu from the start — every field editable at any time, in any order, with a "Quit" option always available and a clean Ctrl+C (no more error stack traces). The `edit-*` ones never touch the body text of an existing post/project, only its frontmatter, and safely rename the file (with a confirm first) if you change its slug. None of them touch git — you review and commit yourself.
 
 **README.md** was also rewritten — it was still the untouched generic Astro starter template, now describes the actual project.
 
@@ -58,7 +59,7 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 
 - **SEO ✅** — every page now has a canonical URL, OpenGraph tags, and Twitter Card tags. Blog posts use their existing homepage cover image (the one in `src/assets/covers/`) as the social-share preview image automatically — no extra work needed per post, it's the same image already used on the homepage. A sitemap now generates automatically at build time, and `robots.txt` points search engines at it. The RSS feed was checked and is structurally valid. Projects don't get a share image yet — the `cover` field on that schema isn't actually wired up to anything in the codebase yet, so there was no existing convention to build on; that's a separate small task if you want it later.
 - **Security pass ✅** — every page now ships a security-headers set (Content-Security-Policy, Strict-Transport-Security, X-Frame-Options, and a few others) via a small script that runs after every build and writes them straight from the actual built HTML, so they can never drift out of sync with the site's real scripts. Verified working in a real browser (dark mode toggle and the Writing page's filter buttons both tested with the headers active, no errors). Also turned on Dependabot (automatic weekly PRs if a dependency needs a security update) and confirmed nothing sensitive has ever been committed to this repo's history. `npm audit` comes back clean.
-- **Still open:** Comments (Cusdis), Analytics (Cloudflare Web Analytics — one click, no code), and the actual production launch checklist.
+- **Still open:** Comments (Cusdis), Analytics (attempted — Cloudflare's dashboard nav didn't cooperate, paused for now, not abandoned), and the actual production launch checklist.
 
 ---
 
@@ -77,5 +78,6 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 
 1. **Run Lighthouse** (Performance + Accessibility) against https://ayosotomi.pages.dev/ — Chrome DevTools or pagespeed.web.dev, both mobile and desktop, ideally on the homepage and one image-heavy essay. Send back the scores and anything flagged; that closes out Phase 3.
 2. **Fill in real content** — the About page, and your first real project/tutorial/project-log post, are still placeholders or templates waiting on your real words. (The Now page is done — it has your real content now.) `npm run new-post` / `npm run new-project` make this easier than hand-editing.
-3. **Remaining Phase 4 items** — comments (Cusdis), analytics (Cloudflare Web Analytics), and the actual beta launch checklist.
-4. **Optional, whenever you feel like it:** Buttondown branding, dashboard-side (not code) — update the Archives page to match the site (I gave you exact values earlier), and check whether "Custom CSS" under Settings → Email is free on your plan.
+3. **Remaining Phase 4 items** — comments (Cusdis), and the actual beta launch checklist.
+4. **Analytics, whenever you're up for tackling Cloudflare's dashboard again** — the standalone Web Analytics page didn't have a working setup snippet for this site; worth checking the `ayosotomi` project directly under Workers & Pages / Compute for an Analytics tab instead, next time.
+5. **Optional, whenever you feel like it:** Buttondown branding, dashboard-side (not code) — update the Archives page to match the site (I gave you exact values earlier), and check whether "Custom CSS" under Settings → Email is free on your plan.

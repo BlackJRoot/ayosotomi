@@ -23,6 +23,7 @@ Execute these commands for standard development workflows. Do not invent new pac
   - `npm run new-post` / `npm run edit-post` — scaffold a new blog post, or edit an existing one (`scripts/new-post-cli.ts` / `scripts/edit-post-cli.ts`)
   - `npm run new-project` / `npm run edit-project` — scaffold a new project, or edit an existing one (`scripts/new-project-cli.ts` / `scripts/edit-project-cli.ts`) — **no draft field on this collection, goes live immediately**
   - All five validate against the site's real Zod schemas (`src/content/*.schema.ts`) before writing anything, and only ever touch frontmatter — body content is always written by hand and the `edit-*` tools carry an existing post/project's body through byte-for-byte, untouched. See `specs/content-guide.md`.
+  - `npm run validate-content` — non-interactive standing lint pass across all three collections (`scripts/validate-content.ts`). Runs the real schemas against every file, plus two heuristic checks schemas can't express: array items with 2+ commas (multiple things crammed into one entry instead of separate array items) and unedited `[bracketed placeholder]` template text. Exit code 1 on a real schema error; heuristic hits are warnings only (exit 0).
 
 ## Protected Areas 🛡️
 Do NOT modify these without explicit human approval:
