@@ -1,22 +1,24 @@
 ---
-updatedAt: 2026-07-31
+updatedAt: 2026-08-10
 workingOn:
-  - "[what you're currently building or focused on]"
+  - "Trying out a small scale homeserver setup"
 learning:
-  - "[a skill, tool, or topic you're picking up]"
-reading:
-  - "[a book, article series, or delete this line]"
+  - "Containerization"
+  - "TypeScript"
+  - "CI/CD Pipeline"
+reading: []
 tools:
-  - "[a tool or app you're relying on right now]"
+  - "Docker"
+  - "Claude"
+  - "Reddit Forums"
+  - "YouTube"
 watching:
-  - "[a show or movie you're into]"
-doing:
-  - "[a hobby or activity outside of work]"
+  - "[Death Note: Desu nôto](https://www.imdb.com/title/tt0877057/)"
 ---
 
 <!--
-  TEMPLATE — this is placeholder content, not your real "Now" status.
-  Edit every bracketed line above with what's actually true for you, then
-  remove this comment. `watching` and `doing` are optional -- delete either
-  array entirely (or individual lines) if they don't apply.
+  `reading` is empty -- add real items when you have some, or leave it
+  empty (the Reading section will just show nothing under its heading).
+  `doing` was removed since it was still unfilled placeholder text;
+  it's optional -- add it back with real content if you want to use it.
 -->
