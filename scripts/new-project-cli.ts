@@ -1,9 +1,10 @@
 // Interactive scaffolder for the `projects` content collection
 // (src/content/projects/). Run via `npm run new-project`. Same shape as
-// now-cli.ts / new-post-cli.ts, but stricter: this collection has NO
-// `draft` field (a deliberate decision -- see MEMORY.md), so whatever
-// this writes is immediately public as soon as it's built and deployed.
-// No silent-overwrite path exists here at all.
+// now-cli.ts / new-post-cli.ts -- one menu from the very first screen,
+// no forced linear pass before you can fix something -- but stricter:
+// this collection has NO `draft` field (a deliberate decision -- see
+// MEMORY.md), so whatever this writes is immediately public as soon as
+// it's built and deployed. No silent-overwrite path exists here at all.
 //
 // This is a dev-only tool. It never runs as part of `npm run build` and
 // nothing it imports ships in the built site.
@@ -16,6 +17,7 @@ import { stringify as stringifyYaml } from 'yaml';
 import { projectsSchema } from '../src/content/projects.schema';
 import { splitFrontmatter } from './lib/frontmatter';
 import { slugify } from './new-post-cli';
+import { runCli } from './lib/quit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECTS_DIR = path.join(__dirname, '..', 'src', 'content', 'projects');
@@ -32,6 +34,7 @@ const STATUSES: { value: Status; label: string }[] = [
 
 interface ProjectData {
   title: string;
+  slug: string;
   description: string;
   status: Status;
   tech: string[];
@@ -63,18 +66,18 @@ async function loadExistingTech(): Promise<string[]> {
   return [...tech].sort();
 }
 
-async function promptTitle(existing?: string): Promise<string> {
+async function promptTitle(existing: string): Promise<string> {
   return input({
     message: 'Title',
-    default: existing,
+    default: existing || undefined,
     validate: (value) => !!value.trim() || 'Title is required',
   });
 }
 
-async function promptSlug(title: string, existing?: string): Promise<string> {
+async function promptSlug(title: string, existing: string): Promise<string> {
   return input({
     message: 'Slug (this becomes the URL and the filename)',
-    default: existing ?? slugify(title),
+    default: existing || slugify(title),
     validate: (value) => {
       if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)) {
         return 'Lowercase letters, numbers, and single hyphens only (e.g. my-project-name)';
@@ -87,15 +90,15 @@ async function promptSlug(title: string, existing?: string): Promise<string> {
   });
 }
 
-async function promptDescription(existing?: string): Promise<string> {
+async function promptDescription(existing: string): Promise<string> {
   return input({
     message: 'Description',
-    default: existing,
+    default: existing || undefined,
     validate: (value) => !!value.trim() || 'Description is required',
   });
 }
 
-async function promptStatus(existing?: Status): Promise<Status> {
+async function promptStatus(existing: Status): Promise<Status> {
   return select({
     message: 'Status',
     default: existing,
@@ -103,12 +106,12 @@ async function promptStatus(existing?: Status): Promise<Status> {
   });
 }
 
-async function promptTech(existingOptions: string[], existingSelected?: string[]): Promise<string[]> {
+async function promptTech(existingOptions: string[], existingSelected: string[]): Promise<string[]> {
   let selected: string[] = [];
   if (existingOptions.length > 0) {
     selected = await checkbox({
       message: 'Tech already used on other projects (space to toggle, enter to confirm)',
-      choices: existingOptions.map((t) => ({ name: t, value: t, checked: existingSelected?.includes(t) })),
+      choices: existingOptions.map((t) => ({ name: t, value: t, checked: existingSelected.includes(t) })),
     });
   }
 
@@ -122,10 +125,10 @@ async function promptTech(existingOptions: string[], existingSelected?: string[]
   return selected;
 }
 
-async function promptStartedAt(existing?: string): Promise<string> {
+async function promptStartedAt(existing: string): Promise<string> {
   return input({
     message: 'Started date',
-    default: existing ?? new Date().toISOString().slice(0, 10),
+    default: existing,
     validate: (value) => DATE_PATTERN.test(value) || 'Use YYYY-MM-DD',
   });
 }
@@ -148,11 +151,11 @@ async function promptUrl(label: string, existing?: string): Promise<string | und
   return value.trim() || undefined;
 }
 
-function printSummary(data: ProjectData, slug: string): void {
-  console.log('\n──────── Review ────────');
-  console.log(`Title:        ${data.title}`);
-  console.log(`Description:  ${data.description}`);
-  console.log(`File:         src/content/projects/${slug}.md`);
+function printSummary(data: ProjectData): void {
+  console.log('\n──────── New project ────────');
+  console.log(`Title:        ${data.title || '(not set)'}`);
+  console.log(`Slug:         ${data.slug || '(not set)'}  → src/content/projects/${data.slug || '<slug>'}.md`);
+  console.log(`Description:  ${data.description || '(not set)'}`);
   console.log(`Status:       ${data.status}`);
   console.log(`Tech:         ${data.tech.length ? data.tech.join(', ') : '(none)'}`);
   console.log(`Started:      ${data.startedAt}`);
@@ -160,52 +163,93 @@ function printSummary(data: ProjectData, slug: string): void {
   console.log(`GitHub:       ${data.githubUrl ?? '(not set)'}`);
   console.log(`Demo:         ${data.demoUrl ?? '(not set)'}`);
   console.log('\n⚠ This collection has no draft field -- saving makes this immediately');
-  console.log('  public on /projects as soon as it\'s built and deployed.');
-  console.log('────────────────────────');
+  console.log("  public on /projects as soon as it's built and deployed.");
+  console.log('──────────────────────────────');
 }
 
 export async function main() {
   console.log(
-    "Scaffolding a new project — this collection has no draft field, so whatever gets saved here goes live immediately.\n"
+    "Scaffolding a new project — this collection has no draft field, so whatever gets saved here goes live immediately. Pick a field to fill it in, or Save once everything looks right.\n"
   );
 
   const existingTech = await loadExistingTech();
 
-  const title = await promptTitle();
-  let slug = await promptSlug(title);
-  const description = await promptDescription();
-  let status = await promptStatus();
-  const tech = await promptTech(existingTech);
-  const startedAt = await promptStartedAt();
-  let completedAt = status === 'completed' ? await promptCompletedAt() : undefined;
-  const githubUrl = await promptUrl('GitHub URL');
-  const demoUrl = await promptUrl('Demo URL');
+  const data: ProjectData = {
+    title: '',
+    slug: '',
+    description: '',
+    status: 'active',
+    tech: [],
+    startedAt: new Date().toISOString().slice(0, 10),
+  };
 
-  const data: ProjectData = { title, description, status, tech, startedAt, completedAt, githubUrl, demoUrl };
-
+  // One menu, from the very first screen -- no separate "collect
+  // everything in order" pass before you're allowed to fix something.
+  // Jump to any field, in any order, as many times as you want, before
+  // ever committing to Save.
   while (true) {
-    printSummary(data, slug);
+    printSummary(data);
 
     const action = await select({
       message: '\nWhat next?',
       choices: [
-        { name: 'Create the file (goes live immediately)', value: 'save' as const },
+        { name: 'Save (goes live immediately)', value: 'save' as const },
         { name: 'Edit a field', value: 'edit' as const },
-        { name: 'Cancel (discard everything)', value: 'cancel' as const },
+        { name: 'Quit (discard everything, nothing saved)', value: 'quit' as const },
       ],
     });
 
-    if (action === 'cancel') {
-      console.log('Cancelled. Nothing was written.');
+    if (action === 'quit') {
+      console.log('Cancelled — nothing was written.');
       return;
     }
+
     if (action === 'save') {
+      if (!data.title.trim() || !data.slug.trim() || !data.description.trim()) {
+        console.log('\n✗ Title, slug, and description are all required before saving.');
+        continue;
+      }
+
+      const result = projectsSchema.safeParse({
+        title: data.title,
+        description: data.description,
+        status: data.status,
+        tech: data.tech,
+        startedAt: data.startedAt,
+        completedAt: data.completedAt,
+        githubUrl: data.githubUrl,
+        demoUrl: data.demoUrl,
+      });
+      if (!result.success) {
+        console.log('\n✗ Validation failed against the projects collection schema:');
+        for (const issue of result.error.issues) console.log(`  - ${issue.path.join('.')}: ${issue.message}`);
+        continue;
+      }
+
+      if (slugCollision(data.slug)) {
+        console.log(`\n✗ src/content/projects/${data.slug}.md already exists.`);
+        continue;
+      }
+
       const reallySure = await confirm({
         message: 'Really publish this now? There is no draft mode for projects.',
         default: false,
       });
-      if (reallySure) break;
-      continue;
+      if (!reallySure) continue;
+
+      const targetPath = path.join(PROJECTS_DIR, `${data.slug}.md`);
+      const frontmatter = stringifyYaml(result.data, {
+        defaultKeyType: 'PLAIN',
+        defaultStringType: 'QUOTE_DOUBLE',
+        lineWidth: 0,
+      });
+      await writeFile(targetPath, `---\n${frontmatter}---\n\n`, 'utf8');
+
+      console.log(`\n✓ Validated against the projects collection's schema`);
+      console.log(`✓ Written to src/content/projects/${data.slug}.md`);
+      console.log("✓ This is live on /projects as soon as this is built and deployed -- no draft mode here.\n");
+      console.log("Now write the body in the file this created — that part's yours.");
+      return;
     }
 
     const field = await select({
@@ -224,12 +268,11 @@ export async function main() {
     });
 
     if (field === 'title') data.title = await promptTitle(data.title);
-    if (field === 'slug') slug = await promptSlug(data.title, slug);
+    if (field === 'slug') data.slug = await promptSlug(data.title, data.slug);
     if (field === 'description') data.description = await promptDescription(data.description);
     if (field === 'status') {
-      status = await promptStatus(data.status);
-      data.status = status;
-      if (status !== 'completed') data.completedAt = undefined;
+      data.status = await promptStatus(data.status);
+      if (data.status !== 'completed') data.completedAt = undefined;
     }
     if (field === 'tech') data.tech = await promptTech(existingTech, data.tech);
     if (field === 'startedAt') data.startedAt = await promptStartedAt(data.startedAt);
@@ -237,49 +280,17 @@ export async function main() {
       if (data.status !== 'completed') {
         console.log('  (only applies when status is "completed" -- change status first)');
       } else {
-        completedAt = await promptCompletedAt(data.completedAt);
-        data.completedAt = completedAt;
+        data.completedAt = await promptCompletedAt(data.completedAt);
       }
     }
     if (field === 'githubUrl') data.githubUrl = await promptUrl('GitHub URL', data.githubUrl);
     if (field === 'demoUrl') data.demoUrl = await promptUrl('Demo URL', data.demoUrl);
   }
-
-  const result = projectsSchema.safeParse(data);
-  if (!result.success) {
-    console.error('\n✗ Validation failed against the projects collection schema:');
-    for (const issue of result.error.issues) {
-      console.error(`  - ${issue.path.join('.')}: ${issue.message}`);
-    }
-    process.exitCode = 1;
-    return;
-  }
-
-  // Re-check right before writing -- validated on entry, but other
-  // fields could have been re-edited afterward without re-touching slug.
-  if (slugCollision(slug)) {
-    console.error(`\n✗ src/content/projects/${slug}.md already exists. Nothing was written.`);
-    process.exitCode = 1;
-    return;
-  }
-
-  const targetPath = path.join(PROJECTS_DIR, `${slug}.md`);
-  const frontmatter = stringifyYaml(data, {
-    defaultKeyType: 'PLAIN',
-    defaultStringType: 'QUOTE_DOUBLE',
-    lineWidth: 0,
-  });
-  await writeFile(targetPath, `---\n${frontmatter}---\n\n`, 'utf8');
-
-  console.log(`\n✓ Validated against the projects collection's schema`);
-  console.log(`✓ Written to src/content/projects/${slug}.md`);
-  console.log('✓ This is live on /projects as soon as this is built and deployed -- no draft mode here.\n');
-  console.log("Now write the body in the file this created — that part's yours.");
 }
 
 // Guard so this module can be imported (e.g. by a test script, or the
 // combined `npm run content` menu) without immediately kicking off the
 // interactive prompts.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main();
+  runCli(main);
 }

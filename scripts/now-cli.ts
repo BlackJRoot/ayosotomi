@@ -16,6 +16,7 @@ import { stringify as stringifyYaml } from 'yaml';
 import { nowSchema } from '../src/content/now.schema';
 import { parseInlineLinks } from '../src/lib/utils';
 import { splitFrontmatter } from './lib/frontmatter';
+import { runCli } from './lib/quit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const NOW_DIR = path.join(__dirname, '..', 'src', 'content', 'now');
@@ -176,7 +177,7 @@ function printSummary(data: NowData): void {
 
 export async function main() {
   console.log(
-    "Editing your Now page — press Enter to keep a value shown as a default, or leave blank to stop a section early.\n"
+    "Editing your Now page — everything below is already filled in from your last entry. Pick a field to change it, or Save as-is.\n"
   );
 
   const latest = await loadLatestEntry();
@@ -192,14 +193,11 @@ export async function main() {
     ...(latest.doing ? { doing: latest.doing as string[] } : {}),
   };
 
-  for (const field of ALL_FIELDS) {
-    await promptField(field, data);
-  }
-
-  // Review loop: keep showing the summary and letting the human either
-  // save, jump back into any single field to fix it, or bail out
-  // entirely -- rather than writing immediately after the last prompt
-  // with no chance to catch a typo without starting over.
+  // One menu, from the very first screen -- no separate "collect
+  // everything in order" pass before you're allowed to fix something.
+  // Every field already starts populated from your last entry, so you
+  // can jump straight to just the one thing you want to change, in any
+  // order, as many times as you want, before ever committing to Save.
   while (true) {
     printSummary(data);
 
@@ -208,12 +206,12 @@ export async function main() {
       choices: [
         { name: 'Save', value: 'save' as const },
         { name: 'Edit a field', value: 'edit' as const },
-        { name: 'Cancel (discard everything)', value: 'cancel' as const },
+        { name: 'Quit (discard everything, nothing saved)', value: 'quit' as const },
       ],
     });
 
-    if (action === 'cancel') {
-      console.log('Cancelled. Nothing was written.');
+    if (action === 'quit') {
+      console.log('Cancelled — nothing was written.');
       return;
     }
     if (action === 'save') break;
@@ -261,8 +259,9 @@ export async function main() {
   console.log("Done. Review the file and commit/push when you're happy with it — this tool doesn't touch git.");
 }
 
-// Guard so this module can be imported (e.g. by a test script) without
-// immediately kicking off the interactive prompts.
+// Guard so this module can be imported (e.g. by a test script, or the
+// combined `npm run content` menu) without immediately kicking off the
+// interactive prompts.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main();
+  runCli(main);
 }
