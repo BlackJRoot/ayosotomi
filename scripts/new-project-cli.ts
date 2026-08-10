@@ -18,6 +18,7 @@ import { projectsSchema } from '../src/content/projects.schema';
 import { splitFrontmatter } from './lib/frontmatter';
 import { slugify } from './new-post-cli';
 import { runCli } from './lib/quit';
+import { openInEditor } from './lib/open-editor';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECTS_DIR = path.join(__dirname, '..', 'src', 'content', 'projects');
@@ -249,6 +250,9 @@ export async function main() {
       console.log(`✓ Written to src/content/projects/${data.slug}.md`);
       console.log("✓ This is live on /projects as soon as this is built and deployed -- no draft mode here.\n");
       console.log("Now write the body in the file this created — that part's yours.");
+
+      const openNow = await confirm({ message: 'Open it in your editor now?', default: true });
+      if (openNow) await openInEditor(targetPath);
       return;
     }
 
