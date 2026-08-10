@@ -19,7 +19,7 @@ The `blog` collection covers all three of essays, tutorials, and project-logs �
 
 ## Adding a new blog post (essay / tutorial / project-log)
 
-**Easiest way: `npm run new-post`.** Interactive CLI — asks what kind of post it is (and derives the right subfolder *and* `category` from that single answer, so they can't drift out of sync), title and description with live SEO length counters, tags (suggested from what's already used elsewhere on the site, plus freeform), published date, and draft status. Validates against the real schema before writing anything, and shows a review screen before it commits. It only ever writes frontmatter — the body is always yours to write by hand afterward.
+**Easiest way: `npm run new-post`.** Interactive CLI — one menu from the start, showing every field (post type, title/description with live SEO length counters, tags suggested from what's already used elsewhere on the site, published date, draft status) and letting you jump to any of them, in any order, as many times as you want, before choosing Save. Post type derives both the right subfolder *and* the `category` field from a single answer, so they can't drift out of sync. Validates against the real schema before writing anything, and a "Quit" choice is always in the menu if you want to discard everything — nothing is ever written before the final Save. It only ever writes frontmatter — the body is always yours to write by hand afterward.
 
 To do it by hand instead:
 
@@ -83,7 +83,7 @@ src/assets/covers/<post-slug>.<jpeg|jpg|png|webp>
 
 Unlike `/writing` and `/projects`, `now` isn't an index of everything in its folder — the page (and the homepage's "Currently" pulse) always shows whichever file has the **newest `updatedAt`**. That means `src/content/now/` can hold multiple dated snapshots over time (e.g. `current.md`, `2026-08-10.md`, `2026-09-02.md`, ...) and the site automatically shows the latest one — nothing to clean up or rename.
 
-The easiest way to update it: run `npm run now`. It's an interactive CLI (`scripts/now-cli.ts`) that walks through each field one at a time, pre-fills your current values so you can just press Enter to keep them, lets you attach a link to any item (rendered as a real clickable link — see `parseInlineLinks` in `src/lib/utils.ts`), validates everything against the collection's actual schema before writing anything, and saves a new dated file rather than overwriting history. It doesn't touch git — review the file it writes and commit/push yourself.
+The easiest way to update it: run `npm run now`. It's an interactive CLI (`scripts/now-cli.ts`) that shows one menu with every field already filled in from your last entry — jump to any field to change it, in any order, as many times as you want, before choosing Save (or Quit, always available, to discard everything). Lets you attach a link to any item (rendered as a real clickable link — see `parseInlineLinks` in `src/lib/utils.ts`), validates everything against the collection's actual schema before writing anything, and saves a new dated file rather than overwriting history. It doesn't touch git — review the file it writes and commit/push yourself.
 
 You can still hand-edit a `now/*.md` file directly if you'd rather; the fields are:
 

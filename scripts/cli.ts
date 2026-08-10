@@ -13,6 +13,7 @@ import { select } from '@inquirer/prompts';
 import { main as runNow } from './now-cli';
 import { main as runNewPost } from './new-post-cli';
 import { main as runNewProject } from './new-project-cli';
+import { runCli } from './lib/quit';
 
 const TASKS = [
   { name: 'Update the Now page', value: runNow },
@@ -23,12 +24,13 @@ const TASKS = [
 async function main() {
   const task = await select({
     message: 'What do you want to do?',
-    choices: TASKS.map(({ name, value }) => ({ name, value })),
+    choices: [...TASKS.map(({ name, value }) => ({ name, value })), { name: 'Quit', value: null }],
   });
+  if (task === null) return;
   console.log();
   await task();
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main();
+  runCli(main);
 }
