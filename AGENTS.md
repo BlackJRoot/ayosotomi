@@ -18,6 +18,7 @@ Execute these commands for standard development workflows. Do not invent new pac
 - **Testing:** `npm run build && npx astro check` — no formal unit/E2E suite for this MVP; see `agent_docs/testing.md` for the manual verification checklist
 - **Linting & Formatting:** `npx prettier --write .` (Prettier) — ESLint runs via the VS Code extension; ask before adding a dedicated `lint` npm script
 - **Build:** `npm run build` — outputs the static site to `dist/`, deployed to Cloudflare Pages
+- **Editing the Now page:** `npm run now` — interactive CLI (`scripts/now-cli.ts`), see `specs/content-guide.md`. Dev-only tool, never runs during build/deploy.
 
 ## Protected Areas 🛡️
 Do NOT modify these without explicit human approval:

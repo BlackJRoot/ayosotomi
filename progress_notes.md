@@ -7,7 +7,7 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-07-31 (newsletter polish)
+**Last updated:** 2026-08-10 (Now page CLI)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
@@ -16,6 +16,12 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 **Phase 1 (Foundation) and Phase 2 (Core Features) are now both fully done** — Newsletter signup (Phase 2's last open item) is built and live. Phase 3 (Polish) is done except for one thing that needs you: running an actual Lighthouse score. Phase 4 (Launch) has started — SEO and the security pass are both done.
 
 ---
+
+## Side project: `npm run now`
+
+Not part of the phased roadmap — a small standalone tool you asked for. Run `npm run now` and it walks you through updating the Now page one field at a time: shows your current values so you can just press Enter to keep them, lets you attach a link to any item, and won't let you save something that breaks the page's structure (it checks against the same rules the site itself uses before writing anything). Each run saves a new dated file rather than overwriting your history — the Now page already picks whichever entry is newest, so nothing extra to manage there. It doesn't commit or push anything for you.
+
+One honest caveat: I verified all the underlying logic directly (file handling, link formatting, validation, the actual file it writes), but I can't fully drive an interactive prompt session myself in this environment — so you're the first real test of how it actually feels to use. Try it and tell me if anything's off.
 
 ## Phase 1 — Foundation ✅
 

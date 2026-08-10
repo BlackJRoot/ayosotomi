@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "postbuild": "node scripts/generate-headers.mjs",
+    "now": "tsx scripts/now-cli.ts",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -27,8 +28,11 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@inquirer/prompts": "^8.5.2",
     "@types/markdown-it": "^14.1.2",
     "@types/sanitize-html": "^2.16.1",
-    "typescript": "^6.0.3"
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.0"
   }
 }
