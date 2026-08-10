@@ -2,24 +2,11 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { nowSchema } from './content/now.schema';
+import { blogSchema } from './content/blog.schema';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
-  schema: z.object({
-    title: z.string().max(80, 'Title too long for SEO'),
-    description: z.string().max(160, 'Description too long for SEO'),
-    publishedAt: z.coerce.date(),
-    updatedAt: z.coerce.date().optional(),
-    category: z.enum(['essay', 'tutorial', 'project-log', 'now-update']),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-    cover: z
-      .object({
-        src: z.string(),
-        alt: z.string(),
-      })
-      .optional(),
-  }),
+  schema: blogSchema,
 });
 
 const projects = defineCollection({
