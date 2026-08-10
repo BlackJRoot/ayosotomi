@@ -17,6 +17,7 @@ import { stringify as stringifyYaml } from 'yaml';
 import { blogSchema } from '../src/content/blog.schema';
 import { splitFrontmatter } from './lib/frontmatter';
 import { runCli } from './lib/quit';
+import { openInEditor } from './lib/open-editor';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BLOG_DIR = path.join(__dirname, '..', 'src', 'content', 'blog');
@@ -264,6 +265,9 @@ export async function main() {
         `\nOptional homepage cover: drop an image at src/assets/covers/${data.slug}.<jpeg|jpg|png|webp> (portrait, 13:16, ≥520×640px) -- see specs/content-guide.md.`
       );
       console.log("\nNow write the body in the file this created — that part's yours.");
+
+      const openNow = await confirm({ message: 'Open it in your editor now?', default: true });
+      if (openNow) await openInEditor(targetPath);
       return;
     }
 

@@ -19,7 +19,7 @@ The `blog` collection covers all three of essays, tutorials, and project-logs �
 
 ## Adding a new blog post (essay / tutorial / project-log)
 
-**Easiest way: `npm run new-post`.** Interactive CLI — one menu from the start, showing every field (post type, title/description with live SEO length counters, tags suggested from what's already used elsewhere on the site, published date, draft status) and letting you jump to any of them, in any order, as many times as you want, before choosing Save. Post type derives both the right subfolder *and* the `category` field from a single answer, so they can't drift out of sync. Validates against the real schema before writing anything, and a "Quit" choice is always in the menu if you want to discard everything — nothing is ever written before the final Save. It only ever writes frontmatter — the body is always yours to write by hand afterward.
+**Easiest way: `npm run new-post`.** Interactive CLI — one menu from the start, showing every field (post type, title/description with live SEO length counters, tags suggested from what's already used elsewhere on the site, published date, draft status) and letting you jump to any of them, in any order, as many times as you want, before choosing Save. Post type derives both the right subfolder *and* the `category` field from a single answer, so they can't drift out of sync. Validates against the real schema before writing anything, and a "Quit" choice is always in the menu if you want to discard everything — nothing is ever written before the final Save. It only ever writes frontmatter — the body is always yours to write by hand afterward, and it'll offer to open the new file in `$EDITOR`/`$VISUAL` right after saving.
 
 To do it by hand instead:
 
@@ -46,7 +46,7 @@ To do it by hand instead:
 
 ## Adding a new project
 
-**Easiest way: `npm run new-project`.** Interactive CLI — title, description, status (picked from the real enum, not free text), tech tags (suggested from what's already used on other projects, plus freeform), dates, GitHub/demo URLs (validated before it ever writes anything). **This collection has no `draft` field**, so the CLI is deliberately stricter than the blog-post one about it — it asks you to confirm you really want to publish before saving, since there's no staging step to undo a mistake with. Only ever writes frontmatter — the body is always yours to write by hand afterward.
+**Easiest way: `npm run new-project`.** Interactive CLI — title, description, status (picked from the real enum, not free text), tech tags (suggested from what's already used on other projects, plus freeform), dates, GitHub/demo URLs (validated before it ever writes anything). **This collection has no `draft` field**, so the CLI is deliberately stricter than the blog-post one about it — it asks you to confirm you really want to publish before saving, since there's no staging step to undo a mistake with. Only ever writes frontmatter — the body is always yours to write by hand afterward, and it'll offer to open the new file in `$EDITOR`/`$VISUAL` right after saving.
 
 To do it by hand instead:
 
