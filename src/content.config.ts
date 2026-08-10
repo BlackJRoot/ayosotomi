@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { nowSchema } from './content/now.schema';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -38,18 +39,7 @@ const projects = defineCollection({
 
 const now = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/now' }),
-  schema: z.object({
-    updatedAt: z.coerce.date(),
-    workingOn: z.array(z.string()).max(5),
-    learning: z.array(z.string()).max(5),
-    reading: z.array(z.string()).max(5),
-    tools: z.array(z.string()).max(5),
-    // Optional, lighter "outside of work" fields -- kept separate from and
-    // fully backward-compatible with the four required fields above.
-    // Rendered together in one condensed section, not full standalone blocks.
-    watching: z.array(z.string()).max(3).optional(),
-    doing: z.array(z.string()).max(3).optional(),
-  }),
+  schema: nowSchema,
 });
 
 export const collections = { blog, projects, now };

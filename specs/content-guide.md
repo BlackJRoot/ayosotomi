@@ -69,6 +69,26 @@ src/assets/covers/<post-slug>.<jpeg|jpg|png|webp>
 
 **Dimensions:** portrait, **13:16 aspect ratio**, ideally **≥520×640px** or larger (renders at 208×256, displayed at 104×128 — 2x for sharp retina). The image is center-cropped (`object-cover`), so keep the subject roughly centered.
 
+## Updating the Now page
+
+Unlike `/writing` and `/projects`, `now` isn't an index of everything in its folder — the page (and the homepage's "Currently" pulse) always shows whichever file has the **newest `updatedAt`**. That means `src/content/now/` can hold multiple dated snapshots over time (e.g. `current.md`, `2026-08-10.md`, `2026-09-02.md`, ...) and the site automatically shows the latest one — nothing to clean up or rename.
+
+The easiest way to update it: run `npm run now`. It's an interactive CLI (`scripts/now-cli.ts`) that walks through each field one at a time, pre-fills your current values so you can just press Enter to keep them, lets you attach a link to any item (rendered as a real clickable link — see `parseInlineLinks` in `src/lib/utils.ts`), validates everything against the collection's actual schema before writing anything, and saves a new dated file rather than overwriting history. It doesn't touch git — review the file it writes and commit/push yourself.
+
+You can still hand-edit a `now/*.md` file directly if you'd rather; the fields are:
+
+| Field | Required? | Notes |
+|---|---|---|
+| `updatedAt` | yes | `YYYY-MM-DD` — determines which file "wins" as the current one |
+| `workingOn` | yes | Array of strings, up to 5. Empty array (`[]`) is valid if you have nothing to show |
+| `learning` | yes | Same, up to 5 |
+| `reading` | yes | Same, up to 5 |
+| `tools` | yes | Same, up to 5 |
+| `watching` | no | Up to 3. Omit the field entirely rather than leaving it empty/unused |
+| `doing` | no | Same, up to 3 |
+
+Any item in any of these fields can be `"plain text"` or `"[link text](https://...)"` — both render correctly. **One array item = one bullet on the page** — don't cram multiple things into one comma-separated string (`"Docker, TypeScript"` is one bullet reading exactly that; `- "Docker"` and `- "TypeScript"` as two separate list entries is what you want).
+
 ## Quick reference: where everything lives
 
 ```
@@ -76,6 +96,6 @@ src/content/blog/essays/         essays
 src/content/blog/tutorials/      tutorials
 src/content/blog/project-logs/   project-logs
 src/content/projects/            projects
-src/content/now/                 the Now page (always exactly one "current" file)
+src/content/now/                 the Now page -- newest `updatedAt` wins; edit via `npm run now`
 src/assets/covers/               optional homepage featured-cover images
 ```

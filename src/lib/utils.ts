@@ -49,7 +49,10 @@ export function formatDate(date: Date): string {
   });
 }
 
-if (import.meta.env.DEV) {
+// import.meta.env is Vite-injected -- guard with ?. so this file can also
+// be imported by plain Node scripts outside Astro's pipeline (e.g.
+// scripts/now-cli.ts), where import.meta.env doesn't exist at all.
+if (import.meta.env?.DEV) {
   console.assert(
     calculateReadingTime('') === 1,
     'calculateReadingTime: empty content should still round up to 1 min'
