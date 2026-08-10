@@ -103,6 +103,10 @@ You can still hand-edit a `now/*.md` file directly if you'd rather; the fields a
 
 Any item in any of these fields can be `"plain text"` or `"[link text](https://...)"` — both render correctly. **One array item = one bullet on the page** — don't cram multiple things into one comma-separated string (`"Docker, TypeScript"` is one bullet reading exactly that; `- "Docker"` and `- "TypeScript"` as two separate list entries is what you want).
 
+## Checking everything at once
+
+`npm run validate-content` runs every file in `blog`/`projects`/`now` through its real schema, plus two extra checks a schema can't express on its own: array items with multiple things crammed into one comma-separated string (the "Docker, TypeScript" mistake above), and unedited `[bracketed placeholder]` template text left in a field. Worth running after any batch of hand-edits — the interactive tools above already prevent most of this, but this catches it either way.
+
 ## Quick reference: where everything lives
 
 ```

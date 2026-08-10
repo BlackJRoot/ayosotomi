@@ -32,6 +32,7 @@ npm run new-post        # scaffold a new essay / tutorial / project-log
 npm run edit-post       # edit an existing one
 npm run new-project     # scaffold a new project (goes live immediately — no draft field)
 npm run edit-project    # edit an existing one
+npm run validate-content  # lint every content file (schema + a couple of heuristic checks)
 ```
 
 Each one writes frontmatter only — the actual writing is always done by hand afterward, and `new-post`/`new-project` will offer to open the file straight into your editor once it's saved.
