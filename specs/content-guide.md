@@ -17,6 +17,10 @@ The `blog` collection covers all three of essays, tutorials, and project-logs �
 
 ## Adding a new blog post (essay / tutorial / project-log)
 
+**Easiest way: `npm run new-post`.** Interactive CLI — asks what kind of post it is (and derives the right subfolder *and* `category` from that single answer, so they can't drift out of sync), title and description with live SEO length counters, tags (suggested from what's already used elsewhere on the site, plus freeform), published date, and draft status. Validates against the real schema before writing anything, and shows a review screen before it commits. It only ever writes frontmatter — the body is always yours to write by hand afterward.
+
+To do it by hand instead:
+
 1. **Pick the right subfolder**, based on what kind of post it is:
    - `src/content/blog/essays/` — reflective/opinion writing
    - `src/content/blog/tutorials/` — step-by-step instructional writing

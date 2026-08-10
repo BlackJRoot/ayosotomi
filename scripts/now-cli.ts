@@ -12,9 +12,10 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { input, confirm, select } from '@inquirer/prompts';
-import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
+import { stringify as stringifyYaml } from 'yaml';
 import { nowSchema } from '../src/content/now.schema';
 import { parseInlineLinks } from '../src/lib/utils';
+import { splitFrontmatter } from './lib/frontmatter';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const NOW_DIR = path.join(__dirname, '..', 'src', 'content', 'now');
@@ -50,12 +51,6 @@ const OPTIONAL_FIELDS: FieldDef[] = [
 ];
 
 const ALL_FIELDS = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS];
-
-export function splitFrontmatter(raw: string): Record<string, unknown> {
-  const match = raw.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return {};
-  return (parseYaml(match[1]) as Record<string, unknown>) ?? {};
-}
 
 export async function loadLatestEntry(): Promise<Partial<NowData>> {
   if (!existsSync(NOW_DIR)) return {};

@@ -19,6 +19,7 @@ Execute these commands for standard development workflows. Do not invent new pac
 - **Linting & Formatting:** `npx prettier --write .` (Prettier) — ESLint runs via the VS Code extension; ask before adding a dedicated `lint` npm script
 - **Build:** `npm run build` — outputs the static site to `dist/`, deployed to Cloudflare Pages
 - **Editing the Now page:** `npm run now` — interactive CLI (`scripts/now-cli.ts`), see `specs/content-guide.md`. Dev-only tool, never runs during build/deploy.
+- **Scaffolding a new blog post:** `npm run new-post` — interactive CLI (`scripts/new-post-cli.ts`), same idea as `npm run now`. Writes frontmatter only, validated against the real schema; the body is always yours to write by hand. Dev-only, never runs during build/deploy.
 
 ## Protected Areas 🛡️
 Do NOT modify these without explicit human approval:
