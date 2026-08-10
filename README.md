@@ -1,43 +1,54 @@
-# Astro Starter Kit: Minimal
+# Ayosotomi.com
+
+Ayomiposi Sotomi's personal site — writing, homelab/project write-ups, and a living "Now" page. One owned, privacy-respecting home instead of a fragmented presence across Substack, GitHub, and social platforms.
+
+**Live at:** [ayosotomi.pages.dev](https://ayosotomi.pages.dev/)
+
+## Stack
+
+- [Astro 7](https://astro.build/) + TypeScript (strict)
+- [Tailwind CSS 4](https://tailwindcss.com/) — CSS-first config, no `tailwind.config.mjs` (design tokens live in `src/styles/global.css`)
+- Markdown via [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/) (Zod-validated frontmatter)
+- [Cloudflare Pages](https://pages.cloudflare.com/) — plain static hosting, no backend, no database
+- [Buttondown](https://buttondown.com/) for the newsletter (secretless — no API key, posts straight to a public embed endpoint)
+
+## Development
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev       # dev server at localhost:4321
+npm run build     # production build to dist/
+npm run preview   # preview the production build locally
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Adding content
 
-## 🚀 Project Structure
+Three interactive CLIs handle the repetitive/error-prone parts of adding content (deriving the right folder, validating against the real schema, catching SEO length limits before they're a problem) — see [`specs/content-guide.md`](specs/content-guide.md) for the full picture.
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+npm run content       # one menu for everything below
+npm run now            # update the Now page
+npm run new-post       # scaffold a new essay / tutorial / project-log
+npm run new-project    # scaffold a new project (goes live immediately — no draft field)
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Each one writes frontmatter only — the actual writing is always done by hand afterward, and `new-post`/`new-project` will offer to open the file straight into your editor once it's saved.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Project structure
 
-Any static assets, like images, can be placed in the `public/` directory.
+```
+src/
+├── content/           Blog posts, projects, and Now-page snapshots (Content Collections)
+├── components/        Small, reusable Astro components
+├── layouts/            Page shells (BaseLayout, PostLayout, ProjectLayout)
+├── lib/                Shared utilities (reading time, date formatting, link parsing)
+├── pages/              File-based routes
+└── styles/             Tailwind's @theme block — the Dawn Light color palette lives here
 
-## 🧞 Commands
+scripts/                The content CLIs above, plus build-time tooling (e.g. security headers)
+specs/                  Human-facing docs on how content actually gets published
+```
 
-All commands are run from the root of the project, from a terminal:
+## Project docs
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+This repo is developed with AI-assisted tooling as part of its own workflow — `AGENTS.md` (project conventions and current state), `MEMORY.md` (the technical decision log), and `progress_notes.md` (a plain-language status summary) are all kept up to date alongside the code, not just for humans.
