@@ -9,8 +9,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "postbuild": "node scripts/generate-headers.mjs",
+    "content": "tsx scripts/cli.ts",
     "now": "tsx scripts/now-cli.ts",
     "new-post": "tsx scripts/new-post-cli.ts",
+    "new-project": "tsx scripts/new-project-cli.ts",
     "preview": "astro preview",
     "astro": "astro"
   },

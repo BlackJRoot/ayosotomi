@@ -1,8 +1,8 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
 import { nowSchema } from './content/now.schema';
 import { blogSchema } from './content/blog.schema';
+import { projectsSchema } from './content/projects.schema';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -11,17 +11,7 @@ const blog = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    status: z.enum(['active', 'completed', 'learning', 'archived']),
-    tech: z.array(z.string()),
-    startedAt: z.coerce.date(),
-    completedAt: z.coerce.date().optional(),
-    cover: z.string().optional(),
-    githubUrl: z.url().optional(),
-    demoUrl: z.url().optional(),
-  }),
+  schema: projectsSchema,
 });
 
 const now = defineCollection({
