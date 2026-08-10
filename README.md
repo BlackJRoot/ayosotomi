@@ -23,13 +23,15 @@ npm run preview   # preview the production build locally
 
 ## Adding content
 
-Three interactive CLIs handle the repetitive/error-prone parts of adding content (deriving the right folder, validating against the real schema, catching SEO length limits before they're a problem) — see [`specs/content-guide.md`](specs/content-guide.md) for the full picture.
+Interactive CLIs handle the repetitive/error-prone parts of adding and editing content (deriving the right folder, validating against the real schema, catching SEO length limits before they're a problem) — see [`specs/content-guide.md`](specs/content-guide.md) for the full picture.
 
 ```sh
-npm run content       # one menu for everything below
-npm run now            # update the Now page
-npm run new-post       # scaffold a new essay / tutorial / project-log
-npm run new-project    # scaffold a new project (goes live immediately — no draft field)
+npm run content        # one menu for everything below
+npm run now             # update the Now page
+npm run new-post        # scaffold a new essay / tutorial / project-log
+npm run edit-post       # edit an existing one
+npm run new-project     # scaffold a new project (goes live immediately — no draft field)
+npm run edit-project    # edit an existing one
 ```
 
 Each one writes frontmatter only — the actual writing is always done by hand afterward, and `new-post`/`new-project` will offer to open the file straight into your editor once it's saved.

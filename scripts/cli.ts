@@ -13,12 +13,16 @@ import { select } from '@inquirer/prompts';
 import { main as runNow } from './now-cli';
 import { main as runNewPost } from './new-post-cli';
 import { main as runNewProject } from './new-project-cli';
+import { main as runEditPost } from './edit-post-cli';
+import { main as runEditProject } from './edit-project-cli';
 import { runCli } from './lib/quit';
 
 const TASKS = [
   { name: 'Update the Now page', value: runNow },
   { name: 'Scaffold a new blog post', value: runNewPost },
   { name: 'Scaffold a new project', value: runNewProject },
+  { name: 'Edit an existing blog post', value: runEditPost },
+  { name: 'Edit an existing project', value: runEditProject },
 ];
 
 async function main() {
