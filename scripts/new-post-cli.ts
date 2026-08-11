@@ -223,14 +223,23 @@ export async function main() {
         continue;
       }
 
-      const result = blogSchema.safeParse({
+      // Validated against `toWrite`, and ALSO serialized from `toWrite`
+      // rather than `result.data` -- Zod's z.coerce.date() turns a plain
+      // "YYYY-MM-DD" string into a real Date object as part of
+      // validation, and stringifying a Date produces a full ISO
+      // timestamp ("2026-08-11T00:00:00.000Z") instead of the clean
+      // date-only string every other file in this collection uses.
+      // Validate with the coercion (it's still real validation), write
+      // with the original plain strings.
+      const toWrite = {
         title: data.title,
         description: data.description,
         publishedAt: data.publishedAt,
         category: data.postType.category,
         tags: data.tags,
         draft: data.draft,
-      });
+      };
+      const result = blogSchema.safeParse(toWrite);
       if (!result.success) {
         console.log('\n✗ Validation failed against the blog collection schema:');
         for (const issue of result.error.issues) console.log(`  - ${issue.path.join('.')}: ${issue.message}`);
@@ -247,7 +256,7 @@ export async function main() {
       }
 
       const targetPath = path.join(BLOG_DIR, data.postType.folder, `${data.slug}.md`);
-      const frontmatter = stringifyYaml(result.data, {
+      const frontmatter = stringifyYaml(toWrite, {
         defaultKeyType: 'PLAIN',
         defaultStringType: 'QUOTE_DOUBLE',
         lineWidth: 0,

@@ -15,7 +15,7 @@ src/content/projects/           →  listed on /projects
 
 The `blog` collection covers all three of essays, tutorials, and project-logs — they all live under `src/content/blog/`, split into subfolders by type, and share one Zod schema. `projects` is a separate collection with its own schema.
 
-**Quickest path into any of this: `npm run content`.** Shows a menu (Now page / new blog post / edit a blog post / new project / edit a project) and hands off to whichever tool you pick — same tools described below, just one command to remember.
+**Quickest path into any of this: `npm run content`.** Shows a menu (Now page / new blog post / edit a blog post / new project / edit a project) and hands off to whichever tool you pick — same tools described below, just one command to remember. After a task finishes, it loops back to that same menu instead of ending the session — "Quit" is the only way out now. If your `$EDITOR`/`$VISUAL` is a GUI editor (VS Code, Sublime, ...), it opens detached in the background and the menu comes right back; a terminal editor (vim, nano) still takes over until you close it, since there's no way around that for a terminal-based program.
 
 ## Adding a new blog post (essay / tutorial / project-log)
 
