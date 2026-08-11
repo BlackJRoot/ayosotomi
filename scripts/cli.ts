@@ -26,13 +26,20 @@ const TASKS = [
 ];
 
 async function main() {
-  const task = await select({
-    message: 'What do you want to do?',
-    choices: [...TASKS.map(({ name, value }) => ({ name, value })), { name: 'Quit', value: null }],
-  });
-  if (task === null) return;
-  console.log();
-  await task();
+  // Loops back to this same menu after every task finishes (however it
+  // finished -- saved, or quit out of internally) instead of ending the
+  // whole `npm run content` session after one thing. "Quit" here is the
+  // only way out now.
+  while (true) {
+    const task = await select({
+      message: 'What do you want to do?',
+      choices: [...TASKS.map(({ name, value }) => ({ name, value })), { name: 'Quit', value: null }],
+    });
+    if (task === null) return;
+    console.log();
+    await task();
+    console.log();
+  }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

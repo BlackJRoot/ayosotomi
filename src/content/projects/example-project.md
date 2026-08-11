@@ -1,9 +1,12 @@
 ---
 title: "[Template] Home Network Monitor"
 description: "Reference example — a project write-up structure to copy from when adding a real project. This entry is publicly visible (the projects schema has no draft field) — replace or delete it before launch."
-status: "learning"
-tech: ["Docker", "Raspberry Pi", "Example"]
-startedAt: 2026-07-31
+status: "completed"
+tech:
+  - "Docker"
+  - "Raspberry Pi"
+  - "Example"
+startedAt: "2026-07-31"
 ---
 
 <!--

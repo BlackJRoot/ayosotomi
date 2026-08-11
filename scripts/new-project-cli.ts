@@ -211,7 +211,13 @@ export async function main() {
         continue;
       }
 
-      const result = projectsSchema.safeParse({
+      // Validated against `toWrite`, and ALSO serialized from `toWrite`
+      // rather than `result.data` -- see the matching comment in
+      // new-post-cli.ts for why: z.coerce.date() turns a plain date
+      // string into a real Date object during validation, which would
+      // otherwise serialize as a full ISO timestamp instead of the
+      // clean date-only string every other file uses.
+      const toWrite = {
         title: data.title,
         description: data.description,
         status: data.status,
@@ -220,7 +226,8 @@ export async function main() {
         completedAt: data.completedAt,
         githubUrl: data.githubUrl,
         demoUrl: data.demoUrl,
-      });
+      };
+      const result = projectsSchema.safeParse(toWrite);
       if (!result.success) {
         console.log('\n✗ Validation failed against the projects collection schema:');
         for (const issue of result.error.issues) console.log(`  - ${issue.path.join('.')}: ${issue.message}`);
@@ -239,7 +246,7 @@ export async function main() {
       if (!reallySure) continue;
 
       const targetPath = path.join(PROJECTS_DIR, `${data.slug}.md`);
-      const frontmatter = stringifyYaml(result.data, {
+      const frontmatter = stringifyYaml(toWrite, {
         defaultKeyType: 'PLAIN',
         defaultStringType: 'QUOTE_DOUBLE',
         lineWidth: 0,
