@@ -68,7 +68,11 @@ const csp = [
 // must-revalidate disabled edge caching entirely, costing ~1.7s TTFB
 // (Lighthouse, same day). Balance: s-maxage=300 lets the edge serve
 // HTML for up to 5 minutes (deletions/edits stale for at most that),
-// while browsers still revalidate every request. /_astro/* assets are
+// while browsers still revalidate every request -- max-age=0 alone
+// forces that. must-revalidate was dropped on purpose: Cloudflare's
+// edge refuses to cache responses carrying it, defeating the s-maxage
+// (verified live 2026-08-17: no cf-cache-status with it, HIT without).
+// /_astro/* assets are
 // content-hashed, so a changed file gets a new URL and the old one can
 // cache forever.
 const headers = `/*
@@ -77,7 +81,7 @@ const headers = `/*
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Cache-Control: public, max-age=0, s-maxage=300, must-revalidate
+  Cache-Control: public, max-age=0, s-maxage=300
   Content-Security-Policy: ${csp}
 
 /_astro/*
