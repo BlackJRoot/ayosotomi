@@ -24,7 +24,18 @@ const {
   noindex = false,
 }: Props = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = image ? new URL(image, Astro.site).toString() : undefined;
+
+// Social-share image: an explicit `image` prop (e.g. a post's real cover)
+// wins; otherwise fall back to the build-time generated card for this
+// path from src/pages/og/[...route].ts ("/" -> /og/index.png).
+const ogPath =
+  Astro.url.pathname === '/'
+    ? 'index'
+    : Astro.url.pathname.replace(/^\/|\/$/g, '');
+const ogImageURL = new URL(
+  image ?? `/og/${ogPath}.png`,
+  Astro.site
+).toString();
 ---
 
 <!doctype html>
