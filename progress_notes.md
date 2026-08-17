@@ -7,7 +7,7 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-08-10 (content tooling)
+**Last updated:** 2026-08-17 (colored tag/tech pills)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
@@ -16,6 +16,10 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 **Phase 1 (Foundation) and Phase 2 (Core Features) are now both fully done** — Newsletter signup (Phase 2's last open item) is built and live. Phase 3 (Polish) is done except for one thing that needs you: running an actual Lighthouse score. Phase 4 (Launch) has started — SEO and the security pass are both done.
 
 ---
+
+## Side project: colored tag/tech pills
+
+Post tags (Writing index + post detail pages) and project tech stacks (Projects index + project detail pages) now render as colored pills instead of plain text/borders. The color is assigned deterministically by hashing the tag's own text into one of six hues — same tag always gets the same color everywhere it shows up, no hand-maintained color list to keep in sync as tags are added. All 12 light/dark color pairs verified at 5.5:1+ contrast (WCAG AA needs 4.5:1). Verified in the browser across both index and detail pages, both themes; `astro check` and a production build both clean.
 
 ## Side project: content tooling
 
