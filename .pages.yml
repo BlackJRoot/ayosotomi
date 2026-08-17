@@ -1,0 +1,164 @@
+# Pages CMS configuration (https://pagescms.org)
+#
+# This file teaches app.pagescms.org the site's content model so posts,
+# projects, and the Now page can be written/edited from a browser (or
+# phone) with proper form fields instead of raw markdown. Every save is
+# a git commit to this repo, which triggers a Cloudflare Pages deploy --
+# which is why new posts default to draft: true here (the Zod schema
+# defaults draft to false when the field is absent; the CMS always
+# writes it explicitly, so the safer default wins with no schema drift).
+#
+# Field rules mirror the real schemas in src/content/*.schema.ts -- keep
+# them in sync if a schema changes.
+
+media:
+  input: src/content/blog
+  output: .
+
+content:
+  - name: posts
+    label: Writing
+    type: collection
+    path: src/content/blog
+    filename: '{fields.title}.md'
+    view:
+      fields: [title, category, publishedAt, draft]
+      sort: [publishedAt]
+      default:
+        sort: publishedAt
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+        pattern:
+          regex: '^.{1,80}$'
+          message: 'Title must be 80 characters or fewer (SEO)'
+      - name: description
+        label: Description
+        description: 'One-sentence summary, max 160 characters (SEO).'
+        type: string
+        required: true
+        pattern:
+          regex: '^.{1,160}$'
+          message: 'Description must be 160 characters or fewer (SEO)'
+      - name: publishedAt
+        label: Published
+        type: date
+        required: true
+      - name: updatedAt
+        label: Updated
+        type: date
+      - name: category
+        label: Category
+        type: select
+        required: true
+        default: essay
+        options:
+          values: [essay, tutorial, project-log, now-update]
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+      - name: draft
+        label: Draft
+        description: 'Leave ON until the post is ready -- saves deploy the live site.'
+        type: boolean
+        default: true
+      - name: body
+        label: Body
+        type: rich-text
+
+  - name: projects
+    label: Projects
+    type: collection
+    path: src/content/projects
+    filename: '{fields.title}.md'
+    view:
+      fields: [title, status, startedAt]
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        type: string
+        required: true
+      - name: status
+        label: Status
+        description: 'CAREFUL: projects have no draft field -- saving publishes on the next deploy.'
+        type: select
+        required: true
+        options:
+          values: [active, completed, learning, archived]
+      - name: tech
+        label: Tech stack
+        type: string
+        list: true
+        required: true
+      - name: startedAt
+        label: Started
+        type: date
+        required: true
+      - name: completedAt
+        label: Completed
+        type: date
+      - name: cover
+        label: Cover (path)
+        type: string
+      - name: githubUrl
+        label: GitHub URL
+        type: string
+      - name: demoUrl
+        label: Demo URL
+        type: string
+      - name: body
+        label: Body
+        type: rich-text
+
+  - name: now
+    label: Now page
+    type: collection
+    path: src/content/now
+    view:
+      fields: [updatedAt]
+    fields:
+      - name: updatedAt
+        label: Updated
+        type: date
+        required: true
+      - name: workingOn
+        label: Working on (max 5)
+        type: string
+        list:
+          max: 5
+      - name: learning
+        label: Learning (max 5)
+        type: string
+        list:
+          max: 5
+      - name: reading
+        label: Reading (max 5)
+        type: string
+        list:
+          max: 5
+      - name: tools
+        label: Tools (max 5)
+        type: string
+        list:
+          max: 5
+      - name: watching
+        label: Watching (max 3)
+        type: string
+        list:
+          max: 3
+      - name: doing
+        label: Doing (max 3)
+        type: string
+        list:
+          max: 3
+      - name: body
+        label: Notes (page body)
+        type: rich-text
