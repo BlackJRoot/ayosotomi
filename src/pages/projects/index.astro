@@ -2,10 +2,13 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import { tagColorClass } from '../../lib/utils';
 
 const projects = (await getCollection('projects')).sort(
   (a, b) => b.data.startedAt.valueOf() - a.data.startedAt.valueOf()
 );
+
+const techs = [...new Set(projects.flatMap((p) => p.data.tech))].sort();
 ---
 
 <BaseLayout
@@ -16,8 +19,119 @@ const projects = (await getCollection('projects')).sort(
     <h1 class="font-serif text-4xl font-medium text-text md:text-5xl">
       Projects
     </h1>
-    <div class="mt-10 grid gap-10 sm:grid-cols-2">
-      {projects.map((project) => <ProjectCard project={project} />)}
+
+    {
+      techs.length > 0 && (
+        <div class="mt-8">
+          <div class="flex items-baseline gap-4">
+            <span class="font-mono text-[11px] uppercase tracking-widest text-text-secondary">
+              Filter by tech
+            </span>
+            <button
+              type="button"
+              id="tag-clear"
+              class="hidden text-xs text-link transition-colors duration-300 hover:text-accent"
+            >
+              &times; Clear
+            </button>
+            <span
+              id="filter-count"
+              class="ml-auto font-mono text-[11px] text-text-secondary"
+            />
+          </div>
+          <div class="mt-2.5 flex flex-wrap gap-1.5" id="tag-filters">
+            {techs.map((tech) => (
+              <button
+                type="button"
+                data-tag={tech}
+                data-color={tagColorClass(tech)}
+                class="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary transition-colors duration-300 hover:text-accent"
+              >
+                {tech}
+              </button>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <div class="mt-10 grid gap-10 sm:grid-cols-2" id="project-list">
+      {
+        projects.map((project) => (
+          <div data-tags={JSON.stringify(project.data.tech)}>
+            <ProjectCard project={project} />
+          </div>
+        ))
+      }
     </div>
+    <p id="filter-empty" class="hidden mt-4 text-text-secondary">
+      No projects use that tech — clear the filter to see everything.
+    </p>
   </div>
 </BaseLayout>
+
+<script>
+  const tagFilters = document.getElementById('tag-filters');
+  const clearButton = document.getElementById('tag-clear');
+  const countLabel = document.getElementById('filter-count');
+  const emptyNote = document.getElementById('filter-empty');
+  const list = document.getElementById('project-list');
+
+  let activeTag: string | null = null;
+
+  function applyFilters() {
+    const items = list?.querySelectorAll<HTMLElement>('div[data-tags]') ?? [];
+    let shown = 0;
+    items.forEach((item) => {
+      const itemTags: string[] = JSON.parse(
+        item.getAttribute('data-tags') ?? '[]'
+      );
+      const matches = activeTag === null || itemTags.includes(activeTag);
+      item.classList.toggle('hidden', !matches);
+      if (matches) shown++;
+    });
+
+    tagFilters?.querySelectorAll<HTMLElement>('button[data-tag]').forEach((pill) => {
+      const isActive = pill.getAttribute('data-tag') === activeTag;
+      const color = pill.getAttribute('data-color') ?? '';
+      pill.classList.toggle(color, isActive);
+      pill.classList.toggle('border-transparent', isActive);
+      pill.classList.toggle('text-text-secondary', !isActive);
+    });
+
+    clearButton?.classList.toggle('hidden', activeTag === null);
+    if (countLabel) {
+      countLabel.textContent =
+        activeTag === null ? '' : `Showing ${shown} of ${items.length}`;
+    }
+    emptyNote?.classList.toggle('hidden', shown > 0);
+  }
+
+  tagFilters?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest('button[data-tag]');
+    if (!button) return;
+    const tag = button.getAttribute('data-tag');
+    activeTag = activeTag === tag ? null : tag;
+    applyFilters();
+  });
+
+  clearButton?.addEventListener('click', () => {
+    activeTag = null;
+    applyFilters();
+  });
+
+  // Colored tech pills on the cards double as filters (they live inside
+  // each card's link, so intercept before navigation).
+  list?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const pill = target.closest('.tag-pill');
+    if (!pill) return;
+    event.preventDefault();
+    const tag = pill.textContent?.trim() ?? null;
+    activeTag = activeTag === tag ? null : tag;
+    applyFilters();
+  });
+</script>

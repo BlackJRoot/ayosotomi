@@ -2,12 +2,14 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import { tagColorClass } from '../../lib/utils';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
 
 const categories = ['all', ...new Set(posts.map((post) => post.data.category))];
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
 ---
 
 <BaseLayout
@@ -34,10 +36,49 @@ const categories = ['all', ...new Set(posts.map((post) => post.data.category))];
       }
     </div>
 
+    {
+      tags.length > 0 && (
+        <div class="mt-6">
+          <div class="flex items-baseline gap-4">
+            <span class="font-mono text-[11px] uppercase tracking-widest text-text-secondary">
+              Filter by tag
+            </span>
+            <button
+              type="button"
+              id="tag-clear"
+              class="hidden text-xs text-link transition-colors duration-300 hover:text-accent"
+            >
+              &times; Clear
+            </button>
+            <span
+              id="filter-count"
+              class="ml-auto font-mono text-[11px] text-text-secondary"
+            />
+          </div>
+          <div class="mt-2.5 flex flex-wrap gap-1.5" id="tag-filters">
+            {tags.map((tag) => (
+              <button
+                type="button"
+                data-tag={tag}
+                data-color={tagColorClass(tag)}
+                class="tag-filter-pill rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary transition-colors duration-300 hover:text-accent"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
     <ul class="mt-10" id="post-list">
       {
         posts.map((post, index) => (
-          <li class="pb-10" data-category={post.data.category}>
+          <li
+            class="pb-10"
+            data-category={post.data.category}
+            data-tags={JSON.stringify(post.data.tags)}
+          >
             <PostCard post={post} showBullet />
             {index < posts.length - 1 && (
               <hr class="mt-10 w-1/2 border-border" />
@@ -46,28 +87,96 @@ const categories = ['all', ...new Set(posts.map((post) => post.data.category))];
         ))
       }
     </ul>
+    <p id="filter-empty" class="hidden mt-4 text-text-secondary">
+      Nothing matches that combination — clear a filter and try again.
+    </p>
   </div>
 </BaseLayout>
 
 <script>
-  const filters = document.getElementById('category-filters');
+  const categoryFilters = document.getElementById('category-filters');
+  const tagFilters = document.getElementById('tag-filters');
+  const clearButton = document.getElementById('tag-clear');
+  const countLabel = document.getElementById('filter-count');
+  const emptyNote = document.getElementById('filter-empty');
   const list = document.getElementById('post-list');
 
-  filters?.addEventListener('click', (event) => {
+  let activeCategory = 'all';
+  let activeTag: string | null = null;
+
+  function applyFilters() {
+    const items = list?.querySelectorAll<HTMLElement>('li[data-category]') ?? [];
+    let shown = 0;
+    items.forEach((item) => {
+      const categoryOk =
+        activeCategory === 'all' ||
+        item.getAttribute('data-category') === activeCategory;
+      const itemTags: string[] = JSON.parse(
+        item.getAttribute('data-tags') ?? '[]'
+      );
+      const tagOk = activeTag === null || itemTags.includes(activeTag);
+      const matches = categoryOk && tagOk;
+      item.classList.toggle('hidden', !matches);
+      if (matches) shown++;
+    });
+
+    // Cloud pill states: the active tag takes its color class; the rest
+    // stay neutral outlines (the "quiet cloud").
+    tagFilters?.querySelectorAll<HTMLElement>('button[data-tag]').forEach((pill) => {
+      const isActive = pill.getAttribute('data-tag') === activeTag;
+      const color = pill.getAttribute('data-color') ?? '';
+      pill.classList.toggle(color, isActive);
+      pill.classList.toggle('border-transparent', isActive);
+      pill.classList.toggle('text-text-secondary', !isActive);
+    });
+
+    clearButton?.classList.toggle('hidden', activeTag === null);
+    if (countLabel) {
+      countLabel.textContent =
+        activeTag === null && activeCategory === 'all'
+          ? ''
+          : `Showing ${shown} of ${items.length}`;
+    }
+    emptyNote?.classList.toggle('hidden', shown > 0);
+  }
+
+  categoryFilters?.addEventListener('click', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
     const button = target.closest('button[data-filter]');
     if (!button) return;
+    activeCategory = button.getAttribute('data-filter') ?? 'all';
+    categoryFilters
+      .querySelectorAll('button[data-filter]')
+      .forEach((btn) => btn.setAttribute('data-active', String(btn === button)));
+    applyFilters();
+  });
 
-    const filter = button.getAttribute('data-filter');
+  tagFilters?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest('button[data-tag]');
+    if (!button) return;
+    const tag = button.getAttribute('data-tag');
+    activeTag = activeTag === tag ? null : tag;
+    applyFilters();
+  });
 
-    filters.querySelectorAll('button[data-filter]').forEach((btn) => {
-      btn.setAttribute('data-active', String(btn === button));
-    });
+  clearButton?.addEventListener('click', () => {
+    activeTag = null;
+    applyFilters();
+  });
 
-    list?.querySelectorAll('li[data-category]').forEach((item) => {
-      const matches = filter === 'all' || item.getAttribute('data-category') === filter;
-      item.classList.toggle('hidden', !matches);
-    });
+  // Colored pills on the post cards double as filters. They live inside
+  // each card's link, so intercept the click before it navigates.
+  list?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const pill = target.closest('.tag-pill');
+    if (!pill) return;
+    event.preventDefault();
+    const tag = pill.textContent?.trim() ?? null;
+    activeTag = activeTag === tag ? null : tag;
+    applyFilters();
   });
 </script>
