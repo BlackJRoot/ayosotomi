@@ -123,7 +123,7 @@ const beds = [
             <span
               aria-hidden="true"
               id="now-terminal-caret"
-              class="inline-block h-[1em] w-[2px] shrink-0 self-center bg-accent motion-safe:animate-caret"
+              class="inline-block h-[1em] w-[2px] shrink-0 self-center animate-caret bg-accent"
             />
           </a>
         )
@@ -268,25 +268,20 @@ const beds = [
   // rendered above, so no-JS and reduced-motion users lose nothing.
   const terminal = document.getElementById('now-terminal');
   const textEl = document.getElementById('now-terminal-text');
-  // Reduced-motion users still get the cycling -- commands swap
-  // instantly instead of typing character-by-character. (Note: Linux
-  // with GTK animations disabled reports reduce browser-wide.)
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   if (terminal && textEl) {
     const commands: string[] = JSON.parse(
       terminal.getAttribute('data-commands') ?? '[]'
     );
-    if (commands.length > 1 && reduced.matches) {
-      let index = 0;
-      setInterval(() => {
-        index = (index + 1) % commands.length;
-        textEl.textContent = commands[index];
-      }, 5000);
-    } else if (commands.length > 1) {
+    // Typing runs for everyone by explicit choice (2026-08-17),
+    // including prefers-reduced-motion -- an earlier build swapped text
+    // instantly for reduced-motion users and it read as broken
+    // "blipping". Note: Linux with GTK animations disabled reports
+    // reduce browser-wide, so that mode is overrepresented locally.
+    if (commands.length > 1) {
       const TYPE_MS = 34;
       const ERASE_MS = 14;
-      const HOLD_MS = 3600;
+      const HOLD_MS = 4000;
       let index = 0;
 
       const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
