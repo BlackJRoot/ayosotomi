@@ -40,7 +40,7 @@ const ogImage = coverImage ? (await getImage({ src: coverImage })).src : undefin
   image={ogImage}
   type="article"
 >
-  <article class="mx-auto max-w-2xl px-6 py-20">
+  <article class="mx-auto max-w-2xl lg:max-w-4xl px-6 py-20">
     <header>
       <p class="text-sm uppercase tracking-wider text-text-secondary">
         {post.data.category.replace('-', ' ')}
@@ -63,7 +63,7 @@ const ogImage = coverImage ? (await getImage({ src: coverImage })).src : undefin
     </header>
 
     <div
-      class="prose prose-neutral mt-10 max-w-none prose-blockquote:my-8 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:font-serif prose-blockquote:text-xl prose-blockquote:font-normal prose-blockquote:not-italic prose-blockquote:text-text"
+      class="prose prose-neutral mt-10 max-w-none lg:max-w-2xl prose-blockquote:my-8 prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:font-serif prose-blockquote:text-xl prose-blockquote:font-normal prose-blockquote:not-italic prose-blockquote:text-text"
     >
       <slot />
     </div>
