@@ -69,9 +69,14 @@ const csp = [
 // (Lighthouse, same day). Balance: s-maxage=300 lets the edge serve
 // HTML for up to 5 minutes (deletions/edits stale for at most that),
 // while browsers still revalidate every request -- max-age=0 alone
-// forces that. must-revalidate was dropped on purpose: Cloudflare's
-// edge refuses to cache responses carrying it, defeating the s-maxage
-// (verified live 2026-08-17: no cf-cache-status with it, HIT without).
+// forces that (must-revalidate dropped as redundant). Caveat, measured
+// live 2026-08-17: pages.dev does NOT edge-cache any response whose
+// Cache-Control is overridden via _headers (no cf-cache-status on HTML
+// or even immutable assets), so s-maxage currently only advises other
+// shared caches; requests are origin-served. Absolute TTFB fears that
+// prompted this were network-local (cloudflare.com itself measured
+// 1.6s from the same connection). Do not revert to Pages' default
+// caching without remembering why it left: 7-day stale deleted pages.
 // /_astro/* assets are
 // content-hashed, so a changed file gets a new URL and the old one can
 // cache forever.
