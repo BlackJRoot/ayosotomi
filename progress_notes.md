@@ -78,6 +78,26 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 - **Newsletter signup has no API key, on purpose.** The original plan called for a Buttondown API key and a bit of server-side code to use it safely. Since this site has no server, that would've meant adding one just for this — a real change to how the whole site works, not just a feature. Buttondown has a public signup endpoint made for exactly this situation (plain static sites), so the form uses that instead: no key, nothing new to secure, and the site stays exactly as simple as it's been from day one. If you ever want extras that genuinely need the API (a live subscriber count, custom confirmation emails), that's the point to revisit this — not before.
 - **RSS-to-email automation (Buttondown watching your feed and drafting/sending emails for you) is real and exists, but costs +$9/month** and you decided to hold off for now. If you turn it on later, use "create a draft" mode rather than auto-send, so you still get a last look before anything goes out.
 
+## Side project: ideas from comparing against lifeofdanel.xyz
+
+Not built yet — a brainstorm from a deep compare-and-contrast against Daniel Anomfueme's site (https://www.lifeofdanel.xyz/), a portfolio/homelab site you admire. Verified directly against the live site (DOM/CSS inspection, not guesswork). Recorded here so it survives a `/clear` — this list got lost once already after a chat clear and had to be rebuilt from scratch.
+
+**Already shipped from this comparison:** colored tag/tech pills on posts and projects (see the section above) — his site hashes each tag to one of a fixed set of tinted, fully-rounded pill colors; ours works the same way.
+
+**Still just ideas, ranked roughly by how directly they build on existing work:**
+1. **Click-to-filter by tag** — his Blog/Projects pages show a full tag cloud; click a tag to filter the list. Ours only filters Writing by category (All/Essay). Would reuse the pill component we already built, just make it clickable and wire a filter.
+2. **Hero typewriter animation** — confirmed via live DOM inspection: his hero headline types out role phrases word-by-word with a blinking cursor. The natural equivalent for us isn't job titles — it's cycling through the Now page's `workingOn`/`learning`/`reading` items (the same data already powering the homepage's "Currently" pulse in `src/pages/index.astro`) directly in the hero, more visually present than the current small pulse line.
+3. **Numbered section motif** — "01"/"02" next to section headers ("Writing", "Projects") and "01–05" next to each list item on the homepage. Small editorial touch, fits the existing serif homepage design.
+4. **Personality-infused 404 page** — his has a themed quote tied to his own interests plus "this page went off-grid" copy, not generic error text. Ours could get one line of real personality on top of the existing nav links.
+5. **Dual project CTAs** — "View Details" / "Live Demo" as two distinct buttons on project cards instead of one link.
+6. **Stat-tile row** — a punchy number row (his: containers running, storage, speaking engagements). Could suit the About page if there's an honest, non-vanity-metric number to show.
+
+**Playground page (homelab showcase) — your call, decision made:** build it now, keep it unlisted (no nav link, excluded from the sitemap) until you're actually running and exposing real homelab services, then turn it on. His structure is worth copying directly when that day comes: a "Public Services" section (live, linked, LIVE badge, tech pills) + a "Behind the Firewall" section (plain list, no links, services that aren't internet-reachable at all — not just hidden from nav) + the stat-tile row from #6 once there are real numbers + an optional "open source the homelab config" callout. Security note: anything not meant to be public should be unreachable from the internet (e.g. behind Tailscale), not just unlinked.
+
+**Experience/Resume page — undecided, needs your call.** Ayosotomi reads as a personal-essay/writing site, not a job-hunting portfolio, so a literal corporate resume page may fight the brand. Two honest options on the table: skip it entirely (About + Now already cover "who you are"/"what you're doing"), or a loose milestones-style timeline framed around things built/shipped rather than job titles, if you do want history on the site.
+
+**Noted but not recommended for direct copying:** his Speaking page and full corporate-style Experience timeline — both fit his consultant/speaker positioning, not obviously ayosotomi's. And a reminder of where we're already ahead of his site: the 3-state Auto/Light/Dark toggle (his is manual light/dark only), and RSS carrying full post content.
+
 ## Next steps
 
 1. **Run Lighthouse** (Performance + Accessibility) against https://ayosotomi.pages.dev/ — Chrome DevTools or pagespeed.web.dev, both mobile and desktop, ideally on the homepage and one image-heavy essay. Send back the scores and anything flagged; that closes out Phase 3.
