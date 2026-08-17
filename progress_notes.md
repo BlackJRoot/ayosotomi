@@ -21,6 +21,20 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 
 Post tags (Writing index + post detail pages) and project tech stacks (Projects index + project detail pages) now render as colored pills instead of plain text/borders. The color is assigned deterministically by hashing the tag's own text into one of six hues — same tag always gets the same color everywhere it shows up, no hand-maintained color list to keep in sync as tags are added. All 12 light/dark color pairs verified at 5.5:1+ contrast (WCAG AA needs 4.5:1). Verified in the browser across both index and detail pages, both themes; `astro check` and a production build both clean.
 
+## Side project: Pages CMS (write from your phone)
+
+Set up 2026-08-17, confirmed working. The pain points were writing in raw
+markdown and not being able to write away from the laptop — solved with
+[Pages CMS](https://app.pagescms.org): a hosted UI over the GitHub repo,
+no code or dependencies added to the site (just `.pages.yml` at the repo
+root). Writing/Projects/Now all editable with proper form fields (the
+Zod schema rules mirrored as UI validation) and a rich-text editor that
+saves as markdown. Every save is a commit to main → Cloudflare deploy,
+so **new posts default to draft: true in the CMS** (flip it off when
+ready). Projects still have no draft field — saving one publishes it.
+If a schema in `src/content/*.schema.ts` changes, update `.pages.yml`
+to match. Editing from the phone: app.pagescms.org → bookmark it.
+
 ## Side project: content tooling
 
 Not part of the phased roadmap — a set of tools you asked for, built and tested over several rounds. `npm run content` opens one menu for everything below (or run any of them directly):
