@@ -34,7 +34,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.10",
     "@inquirer/core": "^11.2.1",
     "@inquirer/prompts": "^8.5.2",
     "@types/markdown-it": "^14.1.2",
