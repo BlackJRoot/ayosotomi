@@ -51,6 +51,15 @@ const coverImage = featuredSlug
     )?.[1].default
   : undefined;
 
+// Numbered section lists (the "01/02" motif): newest five posts and
+// projects, rebuilt from the collections on every build -- new content
+// shows up here automatically.
+const recentPosts = posts.slice(0, 5);
+const recentProjects = (await getCollection('projects'))
+  .sort((a, b) => b.data.startedAt.valueOf() - a.data.startedAt.valueOf())
+  .slice(0, 5);
+const num = (i: number) => String(i + 1).padStart(2, '0');
+
 const beds = [
   { href: '/writing', title: 'Writing', note: `${posts.length} essays & notes` },
   { href: '/projects', title: 'Projects', note: 'homelab & builds' },
@@ -148,6 +157,83 @@ const beds = [
               Read the essay →
             </a>
           </div>
+        </section>
+      )
+    }
+
+    {
+      recentPosts.length > 0 && (
+        <section class="mt-14">
+          <div class="flex items-baseline gap-3 border-b border-border pb-2">
+            <span class="font-mono text-xs tracking-widest text-accent">01</span>
+            <h2 class="font-serif text-2xl font-medium text-text">Writing</h2>
+            <a
+              href="/writing"
+              class="ml-auto text-sm text-link transition-colors duration-300 hover:text-accent"
+            >
+              All essays →
+            </a>
+          </div>
+          <ul>
+            {recentPosts.map((post, i) => (
+              <li class="border-b border-border last:border-b-0">
+                <a
+                  href={`/writing/${post.id}/`}
+                  class="group flex items-baseline gap-3.5 py-3"
+                >
+                  <span class="font-mono text-[11px] text-text-secondary">
+                    {num(i)}
+                  </span>
+                  <span class="font-serif text-[17px] text-text transition-colors duration-300 group-hover:text-accent">
+                    {post.data.title}
+                  </span>
+                  <span class="ml-auto shrink-0 text-sm text-text-secondary">
+                    {post.data.publishedAt.toLocaleDateString('en-US', {
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      recentProjects.length > 0 && (
+        <section class="mt-12">
+          <div class="flex items-baseline gap-3 border-b border-border pb-2">
+            <span class="font-mono text-xs tracking-widest text-accent">02</span>
+            <h2 class="font-serif text-2xl font-medium text-text">Projects</h2>
+            <a
+              href="/projects"
+              class="ml-auto text-sm text-link transition-colors duration-300 hover:text-accent"
+            >
+              All projects →
+            </a>
+          </div>
+          <ul>
+            {recentProjects.map((project, i) => (
+              <li class="border-b border-border last:border-b-0">
+                <a
+                  href={`/projects/${project.id}/`}
+                  class="group flex items-baseline gap-3.5 py-3"
+                >
+                  <span class="font-mono text-[11px] text-text-secondary">
+                    {num(i)}
+                  </span>
+                  <span class="font-serif text-[17px] text-text transition-colors duration-300 group-hover:text-accent">
+                    {project.data.title}
+                  </span>
+                  <span class="ml-auto shrink-0 text-sm text-text-secondary">
+                    {project.data.startedAt.getFullYear()}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </section>
       )
     }
