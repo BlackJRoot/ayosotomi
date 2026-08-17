@@ -1,5 +1,26 @@
 const WORDS_PER_MINUTE = 200;
 
+// Number of hues defined in global.css as --tag-c0-bg/text through
+// --tag-c5-bg/text (and the matching .tag-c0..c5 classes). Keep these
+// two in sync -- if you add a hue there, bump this.
+const TAG_COLOR_COUNT = 6;
+
+// Deterministically maps a tag/tech string to one of the palette hues
+// in global.css, so the same tag always gets the same color everywhere
+// it appears (a project's ProjectCard pill and its detail-page pill,
+// for instance) without hand-maintaining a tag->color lookup table.
+// Different tags CAN land on the same color (6 buckets, unbounded tag
+// vocabulary) -- that's an accepted trade-off for "no maintenance"
+// over "guaranteed uniqueness."
+export function tagColorClass(tag: string): string {
+  let hash = 0;
+  for (let i = 0; i < tag.length; i++) {
+    hash = (hash * 31 + tag.charCodeAt(i)) | 0;
+  }
+  const index = Math.abs(hash) % TAG_COLOR_COUNT;
+  return `tag-c${index}`;
+}
+
 export interface TextSegment {
   text: string;
   href?: string;
@@ -88,5 +109,13 @@ if (import.meta.env?.DEV) {
       );
     })(),
     'parseInlineLinks: a link surrounded by plain text should split into three segments'
+  );
+  console.assert(
+    tagColorClass('Docker') === tagColorClass('Docker'),
+    'tagColorClass: the same tag must always get the same color'
+  );
+  console.assert(
+    /^tag-c[0-5]$/.test(tagColorClass('Docker')),
+    'tagColorClass: must return one of the 6 defined classes (tag-c0..tag-c5)'
   );
 }
