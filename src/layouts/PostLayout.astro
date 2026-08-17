@@ -6,7 +6,7 @@ import BaseLayout from './BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import ReadingTime from '../components/ReadingTime.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
-import { formatDate } from '../lib/utils';
+import { formatDate, tagColorClass } from '../lib/utils';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -51,6 +51,15 @@ const ogImage = coverImage ? (await getImage({ src: coverImage })).src : undefin
       <p class="mt-4 text-sm text-text-secondary">
         {formatDate(post.data.publishedAt)} · <ReadingTime minutes={readingTime} />
       </p>
+      {
+        post.data.tags.length > 0 && (
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {post.data.tags.map((tag) => (
+              <li class={`tag-pill ${tagColorClass(tag)}`}>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
     </header>
 
     <div

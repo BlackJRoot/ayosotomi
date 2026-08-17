@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { tagColorClass } from '../lib/utils';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -47,9 +48,7 @@ const statusStyles: Record<CollectionEntry<'projects'>['data']['status'], string
     <ul class="mt-3 flex flex-wrap gap-2">
       {
         project.data.tech.map((tech) => (
-          <li class="rounded-full border border-border px-2 py-0.5 text-xs text-text-secondary">
-            {tech}
-          </li>
+          <li class={`tag-pill ${tagColorClass(tech)}`}>{tech}</li>
         ))
       }
     </ul>

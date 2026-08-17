@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
-import { formatDate } from '../lib/utils';
+import { formatDate, tagColorClass } from '../lib/utils';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -43,6 +43,15 @@ const { project } = Astro.props;
           )
         }
       </div>
+      {
+        project.data.tech.length > 0 && (
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {project.data.tech.map((tech) => (
+              <li class={`tag-pill ${tagColorClass(tech)}`}>{tech}</li>
+            ))}
+          </ul>
+        )
+      }
     </header>
 
     <div class="prose prose-neutral mt-10 max-w-none">

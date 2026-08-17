@@ -27,6 +27,44 @@
   --color-visited: #A3C08E;
 }
 
+/* Tag/tech pill colors -- six hues chosen to sit inside Dawn Light
+   without competing with --color-accent. Which tag gets which color is
+   assigned deterministically by tagColorClass() in src/lib/utils.ts (a
+   hash of the tag's own text), not hand-picked per tag -- same tag
+   always gets the same color everywhere it appears. All 12 pairs
+   (6 hues x light/dark) verified at 5.5:1 contrast or better, WCAG AA
+   requires 4.5:1 for this text size. */
+:root {
+  --tag-c0-bg: #E8EDE1; --tag-c0-text: #4B6043; /* sage */
+  --tag-c1-bg: #E3E8F0; --tag-c1-text: #3E5578; /* slate blue */
+  --tag-c2-bg: #F2E1E0; --tag-c2-text: #7A4340; /* rose */
+  --tag-c3-bg: #EAE1F0; --tag-c3-text: #5B4378; /* lavender */
+  --tag-c4-bg: #F0E8D0; --tag-c4-text: #6B5423; /* ochre */
+  --tag-c5-bg: #DCEAE6; --tag-c5-text: #2F6358; /* teal */
+}
+[data-theme='dark'] {
+  --tag-c0-bg: #2A3324; --tag-c0-text: #A8C398;
+  --tag-c1-bg: #232C3D; --tag-c1-text: #9DB4D9;
+  --tag-c2-bg: #362321; --tag-c2-text: #D9A8A4;
+  --tag-c3-bg: #2C2436; --tag-c3-text: #C4A8D9;
+  --tag-c4-bg: #362E1C; --tag-c4-text: #D9C088;
+  --tag-c5-bg: #1F332F; --tag-c5-text: #8FC7B8;
+}
+
+.tag-pill {
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.tag-c0 { background-color: var(--tag-c0-bg); color: var(--tag-c0-text); }
+.tag-c1 { background-color: var(--tag-c1-bg); color: var(--tag-c1-text); }
+.tag-c2 { background-color: var(--tag-c2-bg); color: var(--tag-c2-text); }
+.tag-c3 { background-color: var(--tag-c3-bg); color: var(--tag-c3-text); }
+.tag-c4 { background-color: var(--tag-c4-bg); color: var(--tag-c4-text); }
+.tag-c5 { background-color: var(--tag-c5-bg); color: var(--tag-c5-text); }
+
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
