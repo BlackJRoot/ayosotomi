@@ -268,13 +268,22 @@ const beds = [
   // rendered above, so no-JS and reduced-motion users lose nothing.
   const terminal = document.getElementById('now-terminal');
   const textEl = document.getElementById('now-terminal-text');
+  // Reduced-motion users still get the cycling -- commands swap
+  // instantly instead of typing character-by-character. (Note: Linux
+  // with GTK animations disabled reports reduce browser-wide.)
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  if (terminal && textEl && !reduced.matches) {
+  if (terminal && textEl) {
     const commands: string[] = JSON.parse(
       terminal.getAttribute('data-commands') ?? '[]'
     );
-    if (commands.length > 1) {
+    if (commands.length > 1 && reduced.matches) {
+      let index = 0;
+      setInterval(() => {
+        index = (index + 1) % commands.length;
+        textEl.textContent = commands[index];
+      }, 5000);
+    } else if (commands.length > 1) {
       const TYPE_MS = 34;
       const ERASE_MS = 14;
       const HOLD_MS = 3600;
