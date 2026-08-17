@@ -56,13 +56,25 @@ const csp = [
   'upgrade-insecure-requests',
 ].join('; ');
 
+// Cache-Control: without an explicit policy, Cloudflare's edge cached
+// HTML with s-maxage=604800 (7 days) -- a deleted post's URL kept
+// serving stale content for up to a week after the deploy that removed
+// it (found 2026-08-17 via the Pages CMS hello-world test). Pages and
+// feeds must revalidate with the origin on every request (unchanged
+// pages still answer as cheap 304s via ETag); /_astro/* assets are
+// content-hashed, so a changed file gets a new URL and the old one can
+// cache forever.
 const headers = `/*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cache-Control: public, max-age=0, must-revalidate
   Content-Security-Policy: ${csp}
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
 `;
 
 writeFileSync(join(DIST, '_headers'), headers);
