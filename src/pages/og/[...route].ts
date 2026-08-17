@@ -41,6 +41,10 @@ const pages: Record<string, PageMeta> = {
     title: 'Playground',
     description: 'Services self-hosted from the homelab.',
   },
+  feed: {
+    title: 'Subscribe by feed',
+    description: 'Full posts over RSS — no algorithm, no email, no tracking.',
+  },
   '404': {
     title: "There's nothing planted here.",
     description: 'Page not found — Ayomiposi Sotomi.',

@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Human-facing explainer for the RSS feed. The footer's "RSS" link
+// points here; the actual feed (/rss.xml) is left unstyled because
+// Chromium removed XSLT support, so a styled feed renders blank there.
+
+const feedUrl = new URL('rss.xml', Astro.site ?? 'https://ayosotomi.pages.dev')
+  .href;
+
+const readers = [
+  { name: 'Feedly', href: 'https://feedly.com' },
+  { name: 'NetNewsWire', href: 'https://netnewswire.com' },
+  { name: 'Miniflux', href: 'https://miniflux.app' },
+  { name: 'FreshRSS', href: 'https://freshrss.org' },
+];
+---
+
+<BaseLayout
+  title="RSS feed — Ayomiposi Sotomi"
+  description="Subscribe to new writing via RSS — full posts, no algorithm, no email required."
+>
+  <div class="mx-auto max-w-2xl lg:max-w-4xl px-6 py-20">
+    <p class="font-mono text-[11px] uppercase tracking-widest text-accent">
+      RSS
+    </p>
+    <h1 class="mt-2 font-serif text-4xl font-medium text-text md:text-5xl">
+      Subscribe by feed
+    </h1>
+    <p class="mt-4 max-w-prose text-lg text-text-secondary">
+      Everything published here is available over RSS — full post text, in
+      your reader, the moment it goes up. No algorithm, no email address, no
+      tracking. This is the way.
+    </p>
+
+    <div class="mt-10 max-w-prose rounded-lg border border-border p-5">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-text-secondary">
+        Feed URL
+      </p>
+      <p class="mt-2 break-all rounded-md bg-code-bg px-3 py-2 font-mono text-sm text-text">
+        {feedUrl}
+      </p>
+      <p class="mt-3 text-sm text-text-secondary">
+        Copy that address into your feed reader of choice and you're
+        subscribed. (Clicking it directly shows raw XML — that's normal; the
+        feed is meant for readers, not browsers.)
+      </p>
+    </div>
+
+    <div class="mt-10 max-w-prose">
+      <h2 class="font-serif text-2xl font-medium text-text">
+        New to RSS?
+      </h2>
+      <p class="mt-3 text-text-secondary">
+        A feed reader is an app that checks your favorite sites and shows
+        you new posts in one quiet inbox. Pick one, add feeds, own your
+        reading again. Good places to start:
+      </p>
+      <ul class="mt-4 space-y-2">
+        {
+          readers.map((r) => (
+            <li>
+              <a
+                href={r.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-link transition-colors duration-300 hover:text-accent"
+              >
+                {r.name} ↗
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

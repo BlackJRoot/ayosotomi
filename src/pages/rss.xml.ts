@@ -18,8 +18,10 @@ export async function GET(context: APIContext) {
     title: 'Ayomiposi Sotomi',
     description: 'Writer. Builder. Security-minded human.',
     site,
-    // Human-facing rendering for browsers; feed readers ignore this.
-    stylesheet: '/rss/styles.xsl',
+    // No XSL stylesheet on purpose: Chromium removed XSLT support (a
+    // styled feed renders as a BLANK page there, verified in a real
+    // Chrome 151 against this site). The human-facing explainer lives at
+    // /feed instead; this URL is for feed readers.
     // atom:link self-reference (feed validators want it) + channel language.
     xmlns: { atom: 'http://www.w3.org/2005/Atom' },
     customData: [
