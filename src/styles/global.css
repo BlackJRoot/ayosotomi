@@ -18,6 +18,14 @@
   --font-serif: "Newsreader", serif;
   --font-sans: "Inter", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+
+  /* Blinking caret for the homepage terminal typewriter. Used with
+     motion-safe: so reduced-motion users get a steady (non-blinking)
+     caret alongside the static, fully-typed command. */
+  --animate-caret: caret-blink 1.1s steps(1) infinite;
+  @keyframes caret-blink {
+    50% { opacity: 0; }
+  }
 }
 
 [data-theme='dark'] {
