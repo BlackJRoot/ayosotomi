@@ -7,7 +7,7 @@ technical log (bugs found/fixed, exact verification steps), see
 LEARNING.md and MEMORY.md. This file is the higher-level view.
 -->
 
-**Last updated:** 2026-08-17 (colored tag/tech pills)
+**Last updated:** 2026-08-17 (numbered homepage sections, personality 404, Playground page)
 **Live at:** https://ayosotomi.pages.dev/
 **Repo:** github.com/BlackJRoot/ayosotomi
 
@@ -82,17 +82,19 @@ Astro 7 + TypeScript (strict) + Tailwind 4, deployed to Cloudflare Pages as a pl
 
 Not built yet — a brainstorm from a deep compare-and-contrast against Daniel Anomfueme's site (https://www.lifeofdanel.xyz/), a portfolio/homelab site you admire. Verified directly against the live site (DOM/CSS inspection, not guesswork). Recorded here so it survives a `/clear` — this list got lost once already after a chat clear and had to be rebuilt from scratch.
 
-**Already shipped from this comparison:** colored tag/tech pills on posts and projects (see the section above) — his site hashes each tag to one of a fixed set of tinted, fully-rounded pill colors; ours works the same way.
+**Shipped from this comparison so far:**
+- **Colored tag/tech pills** on posts and projects (see the section above) — his site hashes each tag to one of a fixed set of tinted, fully-rounded pill colors; ours works the same way.
+- **Numbered homepage sections (2026-08-17)** — "01 Writing" / "02 Projects" sections on the homepage, each listing the 5 newest entries as numbered, clickable rows generated from the content collections at build time (auto-updates with new content). Added below the existing hero/beds/featured-essay layout.
+- **Personality 404 (2026-08-17)** — "There's nothing planted here." (garden thread, matching the botanical sprig), a Klaus Mikaelson quote ("Every king needs an heir." — The Originals, picked per your request; swappable), and suggested paths (`/writing`, `/projects`, `/now` — home deliberately dropped per your request).
+- **Playground page (2026-08-17)** — see below.
 
-**Still just ideas, ranked roughly by how directly they build on existing work:**
+**Still just ideas:**
 1. **Click-to-filter by tag** — his Blog/Projects pages show a full tag cloud; click a tag to filter the list. Ours only filters Writing by category (All/Essay). Would reuse the pill component we already built, just make it clickable and wire a filter.
 2. **Hero typewriter animation** — confirmed via live DOM inspection: his hero headline types out role phrases word-by-word with a blinking cursor. The natural equivalent for us isn't job titles — it's cycling through the Now page's `workingOn`/`learning`/`reading` items (the same data already powering the homepage's "Currently" pulse in `src/pages/index.astro`) directly in the hero, more visually present than the current small pulse line.
-3. **Numbered section motif** — "01"/"02" next to section headers ("Writing", "Projects") and "01–05" next to each list item on the homepage. Small editorial touch, fits the existing serif homepage design.
-4. **Personality-infused 404 page** — his has a themed quote tied to his own interests plus "this page went off-grid" copy, not generic error text. Ours could get one line of real personality on top of the existing nav links.
-5. **Dual project CTAs** — "View Details" / "Live Demo" as two distinct buttons on project cards instead of one link.
-6. **Stat-tile row** — a punchy number row (his: containers running, storage, speaking engagements). Could suit the About page if there's an honest, non-vanity-metric number to show.
+3. **Dual project CTAs** — "View Details" / "Live Demo" as two distinct buttons on project cards instead of one link.
+4. **Post share links** — his posts have LinkedIn/Twitter share links at the bottom; would fit a writing-focused site.
 
-**Playground page (homelab showcase) — your call, decision made:** build it now, keep it unlisted (no nav link, excluded from the sitemap) until you're actually running and exposing real homelab services, then turn it on. His structure is worth copying directly when that day comes: a "Public Services" section (live, linked, LIVE badge, tech pills) + a "Behind the Firewall" section (plain list, no links, services that aren't internet-reachable at all — not just hidden from nav) + the stat-tile row from #6 once there are real numbers + an optional "open source the homelab config" callout. Security note: anything not meant to be public should be unreachable from the internet (e.g. behind Tailscale), not just unlinked.
+**Playground page — built (2026-08-17), unlisted.** Lives at `/playground`; all content in `src/data/playground.ts` (edit that file as the lab changes, page rebuilds from it). Design chosen from three mockup rounds: Daniel's bordered-card language re-inked in Dawn Light, services grouped under mono stack headings mirroring the real `~/docker` compose layout (photos/media/download/automation/monitoring), green status dots, tech pills only where they add info (Docker pill dropped everywhere as redundant — the intro says "self-host on Docker" once). Stat tiles: Containers (manual — from `docker ps -q | wc -l`, currently 15), Services + Stacks (auto-counted from the data), "1 Laptop". A "Public Services" section (LIVE badges, external links) renders automatically once the first internet-reachable service is added to the data file — nothing is public yet. "Open Source Homelab" GitHub callout card at the bottom currently points at the GitHub profile as a **placeholder** — swap in the real repo URL in `playground.ts` once the sanitized repo exists (scrub `gluetun/auth`, `common.env`, `*/config` before publishing!). Unlisted three ways: no nav link, `noindex` meta (new `noindex` prop on BaseLayout), excluded from the sitemap (filter in `astro.config.mjs`). Security note stands: anything not meant to be public should be unreachable from the internet (e.g. behind Tailscale), not just unlinked.
 
 **Experience/Resume page — undecided, needs your call.** Ayosotomi reads as a personal-essay/writing site, not a job-hunting portfolio, so a literal corporate resume page may fight the brand. Two honest options on the table: skip it entirely (About + Now already cover "who you are"/"what you're doing"), or a loose milestones-style timeline framed around things built/shipped rather than job titles, if you do want history on the site.
 

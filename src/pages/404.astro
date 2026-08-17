@@ -1,5 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const paths = [
+  { href: '/writing', code: '/writing', note: 'Essays & notes' },
+  { href: '/projects', code: '/projects', note: 'Homelab & builds' },
+  { href: '/now', code: '/now', note: "What I'm up to" },
+];
 ---
 
 <BaseLayout
@@ -9,16 +15,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <div class="mx-auto max-w-2xl px-6 py-20 text-center">
     <p class="text-sm uppercase tracking-wider text-text-secondary">404</p>
     <h1 class="mt-2 font-serif text-4xl font-medium text-text md:text-5xl">
-      There's nothing here.
+      There's nothing planted here.
     </h1>
     <p class="mt-4 text-lg text-text-secondary">
-      The page you're looking for doesn't exist, or moved.
+      The page you're looking for doesn't exist, moved, or hasn't been written
+      yet.
     </p>
-    <a
-      href="/"
-      class="mt-8 inline-block text-link transition-colors duration-300 hover:text-accent"
-    >
-      ← Back home
-    </a>
+
+    <figure class="mx-auto mt-10 max-w-md border-y border-border py-6">
+      <blockquote class="font-serif text-lg italic text-text">
+        &ldquo;Every king needs an heir.&rdquo;
+      </blockquote>
+      <figcaption
+        class="mt-3 text-xs uppercase tracking-wider text-text-secondary"
+      >
+        — Niklaus Mikaelson, <cite class="not-italic">The Originals</cite>
+      </figcaption>
+    </figure>
+
+    <div class="mt-10">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-text-secondary">
+        Try one of these
+      </p>
+      <div class="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-4">
+        {
+          paths.map((p) => (
+            <a href={p.href} class="group text-left">
+              <span class="block font-mono text-sm text-link transition-colors duration-300 group-hover:text-accent">
+                {p.code}
+              </span>
+              <span class="mt-0.5 block text-xs text-text-secondary">
+                {p.note}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
   </div>
 </BaseLayout>
