@@ -289,14 +289,27 @@ const beds = [
       async function loop() {
         for (;;) {
           await sleep(HOLD_MS);
-          const current = textEl!.textContent ?? '';
-          for (let i = current.length; i >= 0; i--) {
-            textEl!.textContent = current.slice(0, i);
-            await sleep(ERASE_MS);
-          }
+          const current = commands[index];
           index = (index + 1) % commands.length;
           const next = commands[index];
-          for (let i = 1; i <= next.length; i++) {
+          // Erase only back to the longest prefix the two commands
+          // share, then type the remainder. Within a category that
+          // keeps `now --learning "` fixed and rewrites just the item;
+          // at a category boundary it erases back through the flag
+          // (to the shared `now --`) before typing the new one.
+          let common = 0;
+          while (
+            common < current.length &&
+            common < next.length &&
+            current[common] === next[common]
+          ) {
+            common++;
+          }
+          for (let i = current.length; i > common; i--) {
+            textEl!.textContent = current.slice(0, i - 1);
+            await sleep(ERASE_MS);
+          }
+          for (let i = common + 1; i <= next.length; i++) {
             textEl!.textContent = next.slice(0, i);
             await sleep(TYPE_MS);
           }
