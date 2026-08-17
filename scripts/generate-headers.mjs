@@ -44,11 +44,16 @@ const scriptSrc = ["'self'", ...scriptHashes].join(' ');
 
 const csp = [
   "default-src 'self'",
-  `script-src ${scriptSrc}`,
+  // static.cloudflareinsights.com: Cloudflare Web Analytics beacon,
+  // auto-injected by Pages (enabled 2026-08-17; disclosed on /privacy).
+  `script-src ${scriptSrc} https://static.cloudflareinsights.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
-  "font-src 'self'",
-  "connect-src 'self'",
+  // data: -- Vite inlines font-subset files under 4KB into the CSS as
+  // data URIs; blocking them broke real fonts (Lighthouse 2026-08-17).
+  "font-src 'self' data:",
+  // cloudflareinsights.com receives the analytics beacon's POSTs.
+  "connect-src 'self' https://cloudflareinsights.com",
   "object-src 'none'",
   "base-uri 'none'",
   "form-action 'self'",
@@ -59,9 +64,11 @@ const csp = [
 // Cache-Control: without an explicit policy, Cloudflare's edge cached
 // HTML with s-maxage=604800 (7 days) -- a deleted post's URL kept
 // serving stale content for up to a week after the deploy that removed
-// it (found 2026-08-17 via the Pages CMS hello-world test). Pages and
-// feeds must revalidate with the origin on every request (unchanged
-// pages still answer as cheap 304s via ETag); /_astro/* assets are
+// it (found 2026-08-17 via the Pages CMS hello-world test). But pure
+// must-revalidate disabled edge caching entirely, costing ~1.7s TTFB
+// (Lighthouse, same day). Balance: s-maxage=300 lets the edge serve
+// HTML for up to 5 minutes (deletions/edits stale for at most that),
+// while browsers still revalidate every request. /_astro/* assets are
 // content-hashed, so a changed file gets a new URL and the old one can
 // cache forever.
 const headers = `/*
@@ -70,7 +77,7 @@ const headers = `/*
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: public, max-age=0, s-maxage=300, must-revalidate
   Content-Security-Policy: ${csp}
 
 /_astro/*
