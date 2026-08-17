@@ -12,11 +12,20 @@ const parser = new MarkdownIt({ html: true });
 
 export async function GET(context: APIContext) {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const site = context.site ?? 'https://ayosotomi.pages.dev';
 
   return rss({
     title: 'Ayomiposi Sotomi',
     description: 'Writer. Builder. Security-minded human.',
-    site: context.site ?? 'https://ayosotomi.pages.dev',
+    site,
+    // Human-facing rendering for browsers; feed readers ignore this.
+    stylesheet: '/rss/styles.xsl',
+    // atom:link self-reference (feed validators want it) + channel language.
+    xmlns: { atom: 'http://www.w3.org/2005/Atom' },
+    customData: [
+      `<atom:link href="${new URL('rss.xml', site).href}" rel="self" type="application/rss+xml"/>`,
+      '<language>en</language>',
+    ].join(''),
     items: posts
       .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
       .map((post) => ({
@@ -24,18 +33,22 @@ export async function GET(context: APIContext) {
         description: post.data.description,
         pubDate: post.data.publishedAt,
         link: `/writing/${post.id}/`,
+        // Category + tags as <category> elements so readers that support
+        // them can group/filter items.
+        categories: [post.data.category, ...post.data.tags],
         // Full body, for feed readers and RSS-to-email automation (e.g.
         // Buttondown) that need actual content, not just the excerpt.
-        // Caveat: cover images co-located next to a post's Markdown file
-        // (src/content/blog/**/*.jpeg etc.) are referenced by relative
-        // path in the source -- Astro's own page renderer resolves and
-        // optimizes those into hashed /_astro/ URLs, but this raw
-        // markdown-it render has no access to that pipeline, so any
-        // inline images in a post body will come through as broken
-        // relative <img> tags here. Text, headings, links, and code
-        // blocks all render correctly; only inline images are affected.
+        // Inline images referenced by relative path (co-located next to
+        // the post's Markdown, resolved to hashed /_astro/ URLs only by
+        // Astro's own page renderer) can't be resolved here, so relative
+        // <img> tags are dropped entirely rather than shipped broken --
+        // readers show clean text instead of dead image icons. Images
+        // with absolute URLs pass through untouched.
         content: sanitizeHtml(parser.render(post.body ?? ''), {
           allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+          exclusiveFilter: (frame) =>
+            frame.tag === 'img' &&
+            !/^https?:\/\//.test(String(frame.attribs?.src ?? '')),
         }),
       })),
   });

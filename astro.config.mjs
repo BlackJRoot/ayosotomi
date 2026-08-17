@@ -11,7 +11,7 @@ export default defineConfig({
     sitemap({
       // /playground is unlisted until the lab has public services:
       // no nav link, noindex meta, and excluded from the sitemap here.
-      filter: (page) => !page.includes('/playground'),
+      filter: (page) => !page.includes('/playground') && !page.includes('/og/'),
     }),
   ],
   markdown: {

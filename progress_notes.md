@@ -21,6 +21,46 @@ LEARNING.md and MEMORY.md. This file is the higher-level view.
 
 Post tags (Writing index + post detail pages) and project tech stacks (Projects index + project detail pages) now render as colored pills instead of plain text/borders. The color is assigned deterministically by hashing the tag's own text into one of six hues — same tag always gets the same color everywhere it shows up, no hand-maintained color list to keep in sync as tags are added. All 12 light/dark color pairs verified at 5.5:1+ contrast (WCAG AA needs 4.5:1). Verified in the browser across both index and detail pages, both themes; `astro check` and a production build both clean.
 
+## Side project: OG images + RSS polish (2026-08-17)
+
+- **Auto-generated social-share images** (`astro-og-canvas`): every page
+  now gets a branded OG card (Dawn Light colors, Newsreader/Inter, accent
+  spine) generated at build time via `src/pages/og/[...route].ts`. A
+  post's real cover still wins when it exists (BaseLayout falls back to
+  `/og/<path>.png` only when no `image` prop is passed). This closed the
+  known gap of projects having no share image. `/og/` excluded from the
+  sitemap. Note: v0.13 API — `await OGImageRoute({...})`, no `param`.
+- **RSS feed polish** (`/rss.xml`): XSL stylesheet (`public/rss/styles.xsl`)
+  so humans clicking the feed link see a styled explainer page instead of
+  raw XML (feed readers unaffected; browsers that don't do XSLT just show
+  raw XML as before — verify in a real browser on the live site, the
+  embedded dev browser sniffs feeds nonstandardly). For readers: items
+  now carry `<category>` elements (category + tags), the channel has an
+  atom:link self-reference and `<language>`, and inline images with
+  unresolvable relative paths are dropped instead of shipped broken.
+
+## Parked: Astro integrations shortlist (adopt when the moment comes)
+
+Reviewed the integrations catalog 2026-08-17 (~1,800 listed; almost all
+are framework adapters/CMS/deploy duplicates that don't fit). Worth
+adopting later, in order:
+
+1. **`astro-pagefind`** — fully static site search, no server. Adopt when
+   post count makes `/writing` hard to scan (~20+ posts).
+2. **`astro-expressive-code`** — copy buttons, file-name frames, line
+   highlighting for code blocks. Adopt with the first real tutorial;
+   needs care to preserve the dual light/dark Shiki setup.
+3. **`@astrojs/mdx`** — components inside posts. Adopt only when a
+   specific post needs one (diagram, callout).
+4. **`astro-embed`** — lazy YouTube/tweet embeds; adopt with the first
+   post that embeds media.
+5. **`astro-icon`** — DX sugar for the hand-inlined SVGs; anytime.
+- Skipped deliberately: Sentry (no meaningful client JS), astro-compress
+  (measure Lighthouse first), framework adapters / server adapters /
+  `@astrojs/db` / auth (need the server this site deliberately lacks),
+  `@astrojs/tailwind` (old Tailwind way; the Vite plugin is correct for v4).
+- **`astro-og-canvas` was #2 on this list and was adopted immediately** (see above).
+
 ## Side project: Pages CMS (write from your phone)
 
 Set up 2026-08-17, confirmed working. The pain points were writing in raw
