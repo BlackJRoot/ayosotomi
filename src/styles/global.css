@@ -4,7 +4,11 @@
 @theme {
   --color-bg: #FAF6F1;
   --color-text: #3D3632;
-  --color-text-secondary: #9A918A;
+  /* 6F6660 (was 9A918A): darkened 2026-08-17 for WCAG AA -- the old
+     value measured 2.87:1 against --color-bg (needs 4.5:1); this one is
+     5.21:1 on bg, 4.82:1 on code-bg. Flagged by PageSpeed on both form
+     factors. Dark theme's value already passes (6.6:1), unchanged. */
+  --color-text-secondary: #6F6660;
   --color-accent: #C4956A;
   --color-link: #B87B6A;
   --color-border: #E5DDD4;
