@@ -74,6 +74,7 @@ const headers = `/*
   Content-Security-Policy: ${csp}
 
 /_astro/*
+  ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 `;
 
