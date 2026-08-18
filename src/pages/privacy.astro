@@ -70,11 +70,13 @@ const lastUpdated = new Date('2026-08-17');
         policy</a> for how they handle subscriber data.
       </p>
 
-      <h2>Comments</h2>
+      <h2>Slow claps</h2>
       <p>
-        Comments are planned but not live yet. When they launch (via
-        Cusdis), this policy will be updated to describe exactly what that
-        service collects and how — before it goes live, not after.
+        Posts have a "slow clap" button instead of comments. Clap counts
+        are anonymous totals stored on this site's own infrastructure (a
+        Cloudflare Worker). To keep counts honest, a one-way hash of your
+        IP address is kept for up to 24 hours and then expires — the
+        address itself is never stored, and nothing ties a clap to you.
       </p>
 
       <h2>Your rights</h2>
