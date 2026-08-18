@@ -25,3 +25,14 @@ pnpm-debug.log*
 
 # Claude Code local tool config (machine-specific)
 .claude/
+
+# Project context / process files -- live in the private ayosotomi-notes
+# repo, symlinked back in for coding-assistant sessions. Never public.
+AGENTS.md
+MEMORY.md
+LEARNING.md
+progress_notes.md
+REVIEW-CHECKLIST.md
+agent_docs
+docs
+.cursor
