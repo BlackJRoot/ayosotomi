@@ -1,0 +1,252 @@
+---
+// The slow clap: hold (hover, touch, or keyboard) for 2 seconds to clap.
+// Design: circular button, accent progress ring sweeping the hold, a
+// brown heart inside pulsing and growing with the progress; both finish
+// together — ring closes in sage, heart lands full-size, count ticks.
+// Backend: the ayosotomi-claps Worker (workers/claps/). One clap per
+// visitor per post (localStorage + server-side IP-hash marker).
+// Renders nothing until CLAPS_ENDPOINT is configured.
+import { CLAPS_ENDPOINT } from '../lib/claps-config';
+
+interface Props {
+  slug: string;
+}
+const { slug }: Props = Astro.props;
+const enabled = CLAPS_ENDPOINT.length > 0;
+---
+
+{
+  enabled && (
+    <div class="mt-14 flex flex-col items-center gap-2.5">
+      <div class="flex items-center gap-3.5">
+        <button
+          type="button"
+          class="slowclap group"
+          data-slug={slug}
+          data-endpoint={CLAPS_ENDPOINT}
+          data-state="rest"
+          aria-label="Hold for two seconds to add a slow clap"
+        >
+          <span class="slowclap-ring" aria-hidden="true">
+            <span class="slowclap-inner">
+              <span class="slowclap-heart">🤎</span>
+            </span>
+          </span>
+        </button>
+        <p class="text-left font-serif text-xl leading-tight text-text">
+          <span class="slowclap-count">–</span>
+          <span class="mt-0.5 block font-sans text-[11px] text-text-secondary">
+            <span class="slowclap-label">slow claps</span>
+          </span>
+        </p>
+      </div>
+      <p class="text-xs italic text-text-secondary">
+        hover or hold for 2 seconds — slow is the point
+      </p>
+    </div>
+  )
+}
+
+<style>
+  .slowclap {
+    --p: 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+  }
+  .slowclap-ring {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--color-accent) calc(var(--p) * 100%),
+      var(--color-border) 0
+    );
+    transition: background-color 0.3s;
+  }
+  .slowclap-inner {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .slowclap-heart {
+    display: inline-block;
+    font-size: 1.15rem;
+    /* grows with hold progress: 1x at rest -> ~1.45x at completion */
+    transform: scale(calc(1 + var(--p) * 0.45));
+  }
+  .slowclap[data-state='holding'] .slowclap-heart {
+    animation: slowclap-beat 0.45s ease-in-out infinite;
+  }
+  @keyframes slowclap-beat {
+    50% {
+      transform: scale(calc(1.12 + var(--p) * 0.45));
+    }
+  }
+  .slowclap[data-state='done'] .slowclap-ring {
+    background: var(--color-visited);
+  }
+  .slowclap[data-state='done'] .slowclap-inner {
+    border-color: transparent;
+  }
+  .slowclap[data-state='done'] {
+    cursor: default;
+  }
+  .slowclap:focus-visible .slowclap-ring {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  const HOLD_MS = 2000;
+
+  document.querySelectorAll<HTMLButtonElement>('.slowclap').forEach((btn) => {
+    const endpoint = btn.dataset.endpoint ?? '';
+    const slug = btn.dataset.slug ?? '';
+    const countEl = btn
+      .closest('div.flex')
+      ?.querySelector<HTMLElement>('.slowclap-count');
+    const labelEl = btn
+      .closest('div.flex')
+      ?.querySelector<HTMLElement>('.slowclap-label');
+    if (!endpoint || !slug || !countEl || !labelEl) return;
+
+    const storageKey = `clapped:${slug}`;
+    let count = 0;
+    let raf = 0;
+    let holdTimer = 0;
+    let start = 0;
+    let holding = false;
+
+    const setProgress = (p: number) =>
+      btn.style.setProperty('--p', String(Math.min(1, Math.max(0, p))));
+
+    function render(state: 'rest' | 'holding' | 'done') {
+      btn.dataset.state = state;
+      countEl!.textContent = String(count);
+      labelEl!.textContent =
+        state === 'done'
+          ? 'clapped 🤎'
+          : state === 'holding'
+            ? 'keep holding…'
+            : 'slow claps';
+    }
+
+    const isDone = () => btn.dataset.state === 'done';
+
+    async function complete() {
+      holding = false;
+      clearTimeout(holdTimer);
+      cancelAnimationFrame(raf);
+      setProgress(1);
+      count += 1; // optimistic
+      render('done');
+      try {
+        localStorage.setItem(storageKey, '1');
+      } catch {
+        /* private mode -- server marker still applies */
+      }
+      try {
+        const res = await fetch(
+          `${endpoint}/claps?slug=${encodeURIComponent(slug)}`,
+          { method: 'POST' }
+        );
+        if (res.ok) {
+          const data = (await res.json()) as { count: number };
+          count = data.count;
+          render('done');
+        }
+      } catch {
+        /* keep the optimistic count */
+      }
+    }
+
+    function tick(now: number) {
+      if (!holding) return;
+      const p = (now - start) / HOLD_MS;
+      setProgress(p);
+      if (p >= 1) {
+        void complete();
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    function beginHold() {
+      if (isDone() || holding) return;
+      holding = true;
+      start = performance.now();
+      render('holding');
+      raf = requestAnimationFrame(tick);
+      // rAF is suspended in hidden/background tabs -- this guard makes
+      // the hold complete on wall-clock time regardless.
+      holdTimer = window.setTimeout(() => {
+        if (holding && performance.now() - start >= HOLD_MS) void complete();
+      }, HOLD_MS + 80);
+    }
+
+    function cancelHold() {
+      if (!holding) return;
+      holding = false;
+      cancelAnimationFrame(raf);
+      clearTimeout(holdTimer);
+      setProgress(0);
+      render('rest');
+    }
+
+    // Pointer: hover-to-hold for mouse, press-to-hold for touch/pen.
+    btn.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'mouse') beginHold();
+    });
+    btn.addEventListener('pointerleave', cancelHold);
+    btn.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') beginHold();
+    });
+    btn.addEventListener('pointerup', (e) => {
+      if (e.pointerType !== 'mouse') cancelHold();
+    });
+    btn.addEventListener('pointercancel', cancelHold);
+
+    // Keyboard: hold Space or Enter.
+    btn.addEventListener('keydown', (e) => {
+      if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
+        e.preventDefault();
+        beginHold();
+      }
+    });
+    btn.addEventListener('keyup', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') cancelHold();
+    });
+    btn.addEventListener('blur', cancelHold);
+
+    // Initial state: fetch the count; honor a previous clap.
+    let alreadyClapped = false;
+    try {
+      alreadyClapped = localStorage.getItem(storageKey) === '1';
+    } catch {
+      /* ignore */
+    }
+    fetch(`${endpoint}/claps?slug=${encodeURIComponent(slug)}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data: { count: number }) => {
+        count = data.count;
+        if (alreadyClapped) setProgress(1);
+        render(alreadyClapped ? 'done' : 'rest');
+      })
+      .catch(() => {
+        // Endpoint unreachable: leave the dash, stay quiet.
+        render(alreadyClapped ? 'done' : 'rest');
+        countEl!.textContent = '–';
+      });
+  });
+</script>

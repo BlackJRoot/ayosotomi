@@ -1,0 +1,17 @@
+{
+  // Deploy from this folder: npx wrangler deploy
+  // First-time setup (one command, prints the namespace id):
+  //   npx wrangler kv namespace create CLAPS
+  // ...then paste the printed id below and deploy. Optionally set a
+  // private salt for the IP hashing (any random string):
+  //   npx wrangler secret put IP_SALT
+  "name": "ayosotomi-claps",
+  "main": "worker.js",
+  "compatibility_date": "2026-08-01",
+  "kv_namespaces": [
+    {
+      "binding": "CLAPS",
+      "id": "REPLACE_WITH_NAMESPACE_ID"
+    }
+  ]
+}

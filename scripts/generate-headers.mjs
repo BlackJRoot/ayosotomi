@@ -53,7 +53,9 @@ const csp = [
   // data URIs; blocking them broke real fonts (Lighthouse 2026-08-17).
   "font-src 'self' data:",
   // cloudflareinsights.com receives the analytics beacon's POSTs.
-  "connect-src 'self' https://cloudflareinsights.com",
+  // cloudflareinsights: analytics beacon. workers.dev: the slow-clap
+  // counter (workers/claps/) -- remove it here and claps silently die.
+  "connect-src 'self' https://cloudflareinsights.com https://ayosotomi-claps.blackjesus-root.workers.dev",
   "object-src 'none'",
   "base-uri 'none'",
   "form-action 'self'",
