@@ -16,11 +16,6 @@ const { Content } = await render(post);
 const readingTime = calculateReadingTime(post.body ?? '');
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const related = allPosts
-  .filter((p) => p.id !== post.id && p.data.category === post.data.category)
-  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
-  .slice(0, 3);
-
 const categoryPosts = allPosts
   .filter((p) => p.data.category === post.data.category)
   .sort((a, b) => a.data.publishedAt.valueOf() - b.data.publishedAt.valueOf());
@@ -33,7 +28,6 @@ const nextPost =
 <PostLayout
   post={post}
   readingTime={readingTime}
-  related={related}
   prevPost={prevPost}
   nextPost={nextPost}
 >

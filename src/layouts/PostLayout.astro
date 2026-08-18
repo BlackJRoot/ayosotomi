@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
 import ReadingTime from '../components/ReadingTime.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
 import SlowClap from '../components/SlowClap.astro';
@@ -11,12 +10,11 @@ import { formatDate, tagColorClass } from '../lib/utils';
 interface Props {
   post: CollectionEntry<'blog'>;
   readingTime: number;
-  related: CollectionEntry<'blog'>[];
   prevPost?: CollectionEntry<'blog'>;
   nextPost?: CollectionEntry<'blog'>;
 }
 
-const { post, readingTime, related, prevPost, nextPost } = Astro.props;
+const { post, readingTime, prevPost, nextPost } = Astro.props;
 
 // Social-share image: the generated split-panel card (BaseLayout's
 // /og/<path>.png fallback) is used for ALL posts now — posts with a
@@ -100,19 +98,5 @@ const { post, readingTime, related, prevPost, nextPost } = Astro.props;
       )
     }
 
-    {
-      related.length > 0 && (
-        <section class="mt-16">
-          <h2 class="mb-4 text-sm uppercase tracking-wider text-text-secondary">
-            Related
-          </h2>
-          <div class="space-y-8">
-            {related.map((relatedPost) => (
-              <PostCard post={relatedPost} />
-            ))}
-          </div>
-        </section>
-      )
-    }
   </article>
 </BaseLayout>
