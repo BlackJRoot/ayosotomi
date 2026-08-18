@@ -1,7 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import type { ImageMetadata } from 'astro';
-import { getImage } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import ReadingTime from '../components/ReadingTime.astro';
@@ -19,26 +17,15 @@ interface Props {
 
 const { post, readingTime, related, prevPost, nextPost } = Astro.props;
 
-// Reuse the homepage's featured-cover convention (src/assets/covers/<slug>.ext)
-// as the post's social-share (OG/Twitter) image, since it's the only cover
-// image already associated with a post.
-const covers = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/covers/*.{jpeg,jpg,png,webp}',
-  { eager: true }
-);
-const postSlug = post.id.split('/').pop();
-const coverImage = postSlug
-  ? Object.entries(covers).find(
-      ([path]) => path.split('/').pop()?.replace(/\.[^.]+$/, '') === postSlug
-    )?.[1].default
-  : undefined;
-const ogImage = coverImage ? (await getImage({ src: coverImage })).src : undefined;
+// Social-share image: the generated split-panel card (BaseLayout's
+// /og/<path>.png fallback) is used for ALL posts now — posts with a
+// cover get it blurred into the card by src/pages/og/[...route].ts, so
+// shares always carry the wordmark/title instead of a naked image.
 ---
 
 <BaseLayout
   title={`${post.data.title} — Ayomiposi Sotomi`}
   description={post.data.description}
-  image={ogImage}
   type="article"
 >
   <article class="mx-auto max-w-2xl lg:max-w-4xl px-6 py-20">
