@@ -71,12 +71,18 @@ const ogImageURL = new URL(
     <script is:inline>
       (function () {
         function resolveAutoTheme() {
-          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-          }
-          const hour = new Date().getHours();
-          return hour >= 6 && hour < 18 ? 'light' : 'dark';
-        }
+  const hour = new Date().getHours();
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // Twilight hours are ambiguous — let OS preference settle it
+  const inTwilight = (hour >= 5 && hour < 7) || (hour >= 17 && hour < 19);
+  if (inTwilight) {
+    return prefersDark ? 'dark' : 'light';
+  }
+
+  // Outside twilight, time of day always wins
+  return hour >= 7 && hour < 17 ? 'light' : 'dark';
+}
 
         const stored = localStorage.getItem('theme');
         const pinned = stored === 'light' || stored === 'dark';
