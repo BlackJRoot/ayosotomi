@@ -1,0 +1,9 @@
+{
+  // Deploy from this folder: npx wrangler deploy
+  // One-time setup:
+  //   npx wrangler secret put BUTTONDOWN_API_KEY
+  //   npx wrangler secret put TURNSTILE_SECRET_KEY
+  "name": "ayosotomi-newsletter",
+  "main": "worker.js",
+  "compatibility_date": "2026-08-01"
+}

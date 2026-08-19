@@ -1,11 +1,6 @@
 ---
-// Posts straight to Buttondown's public embed-subscribe endpoint -- no API
-// key, no backend. Submitting opens a small popup showing Buttondown's own
-// confirmation page; without JS, the form's `target` attribute alone still
-// opens a new tab there (native <form> behavior), so this degrades cleanly.
-const BUTTONDOWN_USERNAME = 'ayosotomi';
-const ACTION = `https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`;
-const POPUP_URL = `https://buttondown.com/${BUTTONDOWN_USERNAME}`;
+const WORKER_URL = 'https://ayosotomi-newsletter.blackjesus-root.workers.dev/subscribe';
+const TURNSTILE_SITE_KEY = '0x4AAAAAAEV_7wEN_i6bhayg';
 
 interface Props {
   heading?: string;
@@ -16,15 +11,11 @@ const { heading = 'New writing, straight to your inbox.' } = Astro.props;
 
 <div class="newsletter">
   <p class="font-serif text-lg text-text">{heading}</p>
-  <p class="mt-1 text-sm text-text-secondary">
+  <p class="mt-1 text-sm text-text-secondary newsletter-subtext">
     Occasional writing, nothing else. Unsubscribe anytime.
   </p>
-  <form
-    class="newsletter-form mt-4 flex flex-col gap-3 sm:flex-row"
-    action={ACTION}
-    method="post"
-    target="popupwindow"
-  >
+
+  <form class="newsletter-form mt-4 flex flex-col gap-3 sm:flex-row" novalidate>
     <input
       type="email"
       name="email"
@@ -33,7 +24,6 @@ const { heading = 'New writing, straight to your inbox.' } = Astro.props;
       placeholder="you@example.com"
       class="w-full rounded-md border border-border bg-bg px-4 py-2 text-sm text-text placeholder:text-text-secondary transition-colors duration-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-accent sm:max-w-xs"
     />
-    <input type="hidden" name="embed" value="1" />
     <button
       type="submit"
       class="shrink-0 rounded-md border border-accent bg-accent/10 px-5 py-2 text-sm font-medium text-accent transition-colors duration-300 hover:bg-accent hover:text-bg"
@@ -41,12 +31,88 @@ const { heading = 'New writing, straight to your inbox.' } = Astro.props;
       Subscribe
     </button>
   </form>
+
+  <div
+    id="turnstile-widget"
+    class="cf-turnstile mt-3"
+    data-sitekey={TURNSTILE_SITE_KEY}
+    data-execution="execute"
+    data-appearance="interaction-only"
+    data-callback="onTurnstileVerified"
+    data-error-callback="onTurnstileError"
+  ></div>
+
+  <p class="newsletter-message mt-3 text-sm" hidden></p>
 </div>
 
-<script is:inline define:vars={{ POPUP_URL }}>
-  document.querySelectorAll('form.newsletter-form').forEach((form) => {
-    form.addEventListener('submit', () => {
-      window.open(POPUP_URL, 'popupwindow', 'width=600,height=700');
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script is:inline define:vars={{ WORKER_URL }}>
+  document.querySelectorAll('.newsletter').forEach((wrapper) => {
+    const form = wrapper.querySelector('form.newsletter-form');
+    const button = form.querySelector('button[type="submit"]');
+    const emailInput = form.querySelector('input[name="email"]');
+    const message = wrapper.querySelector('.newsletter-message');
+    const subtext = wrapper.querySelector('.newsletter-subtext');
+
+    function showMessage(text, isError) {
+      message.textContent = text;
+      message.hidden = false;
+      message.classList.toggle('text-red-600', isError);
+      message.classList.toggle('text-accent', !isError);
+    }
+
+    async function submitEmail(token) {
+      button.disabled = true;
+      button.textContent = 'Subscribing…';
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailInput.value, turnstileToken: token }),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          form.hidden = true;
+          subtext.hidden = true;
+          showMessage(data.message, false);
+        } else {
+          showMessage(data.error ?? 'Something went wrong.', true);
+          button.disabled = false;
+          button.textContent = 'Subscribe';
+          window.turnstile?.reset();
+        }
+      } catch {
+        showMessage('Network error -- please try again.', true);
+        button.disabled = false;
+        button.textContent = 'Subscribe';
+        window.turnstile?.reset();
+      }
+    }
+
+    // Turnstile calls this the moment it has a valid token -- only
+    // fires because we triggered execute() on submit, not on page load.
+    window.onTurnstileVerified = (token) => submitEmail(token);
+
+    window.onTurnstileError = () => {
+      showMessage('Verification failed. Please try again.', true);
+      button.disabled = false;
+      button.textContent = 'Subscribe';
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!emailInput.value) {
+        showMessage('Please enter your email.', true);
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Verifying…';
+      window.turnstile?.execute('#turnstile-widget');
     });
   });
 </script>
