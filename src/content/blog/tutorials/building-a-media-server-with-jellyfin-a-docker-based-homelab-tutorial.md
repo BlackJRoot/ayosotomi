@@ -110,9 +110,9 @@ id
 
 which will print something like `uid=1000(you) gid=1000(you)`. Use those numbers.
 
-- - -
+---
 
-## Step 3: Write the Docker Compose file 
+## Step 3: Write the Docker Compose file
 
 Inside `~/docker/media-stack/`, create `docker-compose.yml`:
 
@@ -144,12 +144,12 @@ networks:
 
 I'll explain what each line of code means here so you don't get worked up trying to understand it.
 
-- **`image`** pulls the official Jellyfin container image straight from Docker Hub. You're not installing anything onto your host OS, just downloading a pre-built self-conotained version of the app.
-- **`env_file`** pulls in that shared `common.env` we made earlier: timezone and user IDs, without repeating them in every service we'll eventually add.
-- **`ports: 8096:8096`** maps port 8096 on our host machine to port 8096 inside the container, which is Jellyfin's default web interface port. This is an explicit mapping rather than `network_mode: host`. I prefer each service only expose exactly the port it needs, insteading of handing a container full access to the host's network stack.
-- **`volumes`** is where bind mounts happen. `./config:/config` and `./cache:/cache` create local folders (inside `media-stack/`) that persist Jellyfin's settings and metadata cache between container restarts. Without these, we'd lose our entire configuration every time we recreate the container. The three media lines map our real folders into the container at predictable paths.
-- **`devices: /dev/dri:/dev/dri`** exposes our GPU's render device to the container, which is what makes hardware-accelerated transcoding possible. We'll talk more on this in the next step.
-- **`networks`** puts Jellyfin on its own named Docker network rather than the shared default. If we're only ever running Jellyfin alone, this would barely matter. But the moment you add a second stack (a download client, a monitoring tool), keeping stacks on separate networks stops them from quietly interfering with each other, at the small cost of needing to reference other stacks by IP rather than by container name if they ever need to talk to each other.
+- `**image**` pulls the official Jellyfin container image straight from Docker Hub. You're not installing anything onto your host OS, just downloading a pre-built self-conotained version of the app.
+- `**env_file**` pulls in that shared `common.env` we made earlier: timezone and user IDs, without repeating them in every service we'll eventually add.
+- `**ports: 8096:8096**` maps port 8096 on our host machine to port 8096 inside the container, which is Jellyfin's default web interface port. This is an explicit mapping rather than `network_mode: host`. I prefer each service only expose exactly the port it needs, insteading of handing a container full access to the host's network stack.
+- `**volumes**` is where bind mounts happen. `./config:/config` and `./cache:/cache` create local folders (inside `media-stack/`) that persist Jellyfin's settings and metadata cache between container restarts. Without these, we'd lose our entire configuration every time we recreate the container. The three media lines map our real folders into the container at predictable paths.
+- `**devices: /dev/dri:/dev/dri**` exposes our GPU's render device to the container, which is what makes hardware-accelerated transcoding possible. We'll talk more on this in the next step.
+- `**networks**` puts Jellyfin on its own named Docker network rather than the shared default. If we're only ever running Jellyfin alone, this would barely matter. But the moment you add a second stack (a download client, a monitoring tool), keeping stacks on separate networks stops them from quietly interfering with each other, at the small cost of needing to reference other stacks by IP rather than by container name if they ever need to talk to each other.
 
 Alright, it's time to bring up the stack.
 
@@ -164,11 +164,28 @@ The `-d` runs it detached, in the background. You can check it's actually runnin
 docker compose ps
 ```
 
-- - -
+---
 
 ## Step 5: First-time setup
 
 Once you get the confirmation that everything is up and running, open up your browser and goto `http://<your-server-ip>:8096`. In my case, `http://192.168.18.8:8096`. If you haven't already pinned your server to a fixed IP on your router (usually called a MAC-to-IP binding in your router's admin panel), do that now otherwise the address can change after a reboot or router restart, and every device you've setup to connect to it will silently stop working.
 
+The setup wizard will ask for:
 
+1. A display name for the server and an admin account.
+2. Your media libraries - point it at `/media/movies`, `/media/tv`, `/media/anime` (the *container* paths from your compose file, not the host paths).
+3. Preferred metadata language and remote access preferences (leave remote access off for now - that's a separate, security-relevant conversation).
 
+Jellyfin will scan your entire library and start pulling down posters, descriptions, and cast info. This step is also where inconsistent file naming will bite you. Jellyfin, like most media servers, expepcts a reasonably standard naming convention to correctly identify what it's looking at: 
+
+```
+Movies/
+  Movie Name (2023)/
+    Movie Name (2023).mkv
+Tv_Shows/
+  Show Name/
+    Season 01/
+      Show Name - S01E01 - Episode Title.mkv
+```
+
+If your files are named inconsistently, it's worth renaming them before your first scan rather than fighting mismatched metadata after the fact.
