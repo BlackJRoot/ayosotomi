@@ -46,7 +46,7 @@ const csp = [
   "default-src 'self'",
   // static.cloudflareinsights.com: Cloudflare Web Analytics beacon,
   // auto-injected by Pages (enabled 2026-08-17; disclosed on /privacy).
-  `script-src ${scriptSrc} https://static.cloudflareinsights.com`,
+  `script-src ${scriptSrc} https://static.cloudflareinsights.com https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   // data: -- Vite inlines font-subset files under 4KB into the CSS as
@@ -55,8 +55,9 @@ const csp = [
   // cloudflareinsights.com receives the analytics beacon's POSTs.
   // cloudflareinsights: analytics beacon. workers.dev: the slow-clap
   // counter (workers/claps/) -- remove it here and claps silently die.
-  "connect-src 'self' https://cloudflareinsights.com https://ayosotomi-claps.blackjesus-root.workers.dev",
+  "connect-src 'self' https://cloudflareinsights.com https://ayosotomi-claps.blackjesus-root.workers.dev https://ayosotomi-newsletter.blackjesus-root.workers.dev",
   "object-src 'none'",
+  "frame-src https://challenges.cloudflare.com",
   "base-uri 'none'",
   "form-action 'self'",
   "frame-ancestors 'none'",
